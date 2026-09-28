@@ -15,13 +15,17 @@
 <body>
   <div class="page">
     <header class="topbar">
-      <span class="brand">◆ Fine-Tuning Arena</span>
+      <span class="brand">DORL Fine-Tuning Arena</span>
       <span class="pill">GSM8K · Qwen3-0.6B-Base</span>
     </header>
 
     <section class="hero">
       <h1>Fine-Tuning Arena</h1>
       <p>Leaderboard for GSM8K fine-tuning runs on <code>Qwen/Qwen3-0.6B-Base</code>.</p>
+      <p class="hero-note">
+        GSM8K is a dataset of grade-school math word problems.
+        <span class="hero-example">Example: <em>"Natalia sold clips to 48 friends in April, and half as many in May. How many clips did she sell altogether?"</em> → <strong>72</strong>.</span>
+      </p>
     </section>
 
     <p id="status" class="status">Loading submissions…</p>
@@ -45,8 +49,15 @@
       </div>
     </section>
 
+    <div class="metric-toggle" role="group" aria-label="Chart X-axis metric">
+      <button class="metric-btn metric-btn-purple active" data-metric="trainable_parameters">
+        Trainable parameters
+      </button>
+      <button class="metric-btn metric-btn-coral" data-metric="adapter_bytes">Adapter bytes</button>
+    </div>
+
     <section class="card card-chart" aria-labelledby="chart-heading">
-      <h2 id="chart-heading">Accuracy vs. trainable parameters</h2>
+      <h2 id="chart-heading">Accuracy vs. <span id="chart-metric-label">trainable parameters</span></h2>
       <div id="chart" style="height: 420px"></div>
     </section>
 
@@ -67,9 +78,6 @@
       </table>
     </section>
 
-    <footer>
-      <span class="pill pill-muted">More charts coming soon — adapter size, training time, peak VRAM</span>
-    </footer>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.34.0/plotly.min.js"></script>

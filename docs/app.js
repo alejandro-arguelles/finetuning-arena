@@ -11,15 +11,28 @@ const statsEl = document.getElementById("stats");
 const tableEl = document.getElementById("leaderboard");
 const tbodyEl = tableEl.querySelector("tbody");
 const chartEl = document.getElementById("chart");
+const chartMetricLabelEl = document.getElementById("chart-metric-label");
+const metricButtons = document.querySelectorAll(".metric-btn");
+
+const CHART_METRICS = {
+  trainable_parameters: "trainable parameters",
+  adapter_bytes: "adapter bytes",
+};
+
+// Cached after the first successful load, so toggling the metric just
+// re-renders the chart instead of re-fetching.
+let cachedSubmissions = null;
+let cachedColorMap = null;
 
 const PALETTE = {
+  bg: "#0d0d0d",
   purple: "#8c7ef2",
   coral: "#f2795c",
   yellow: "#f0cb3c",
   green: "#3ea56e",
   cardDark: "#171717",
   ink: "#0b0b0b",
-  inkOnDark: "#f5f5f0",
+  inkOnDark: "#d8d6cd",
   mutedOnDark: "#9c9a92",
 };
 
@@ -88,21 +101,30 @@ function renderStats(submissions) {
   statsEl.hidden = false;
 }
 
-function renderChart(submissions, colorMap) {
+function renderChart(submissions, colorMap, metric = "trainable_parameters") {
+  // trainable_parameters == 0 means "no fine-tuning" (the base model). It has
+  // no meaningful position on a log-scale axis (log(0) is undefined, so
+  // Plotly would just silently drop the point) — it belongs on the chart as
+  // a reference line instead, not as a scatter point, in either metric view.
+  // Rows missing the selected metric (e.g. adapter_bytes on an older
+  // submission) are likewise left out of that view rather than plotted at 0.
+  const plottable = submissions.filter((s) => s.trainable_parameters > 0 && s[metric] > 0);
+  const baselineRows = submissions.filter((s) => s.trainable_parameters <= 0);
+
   const byStudent = new Map();
-  for (const submission of submissions) {
+  for (const submission of plottable) {
     if (!byStudent.has(submission.student)) byStudent.set(submission.student, []);
     byStudent.get(submission.student).push(submission);
   }
 
   const traces = Array.from(byStudent.entries()).map(([student, rows]) => ({
     name: student,
-    x: rows.map((r) => r.trainable_parameters),
+    x: rows.map((r) => r[metric]),
     y: rows.map((r) => r.gsm8k_accuracy),
     text: rows.map(
       (r) =>
         `${r.student} — ${r.run_name}<br>method: ${r.method}<br>` +
-        `trainable params: ${r.trainable_parameters.toLocaleString()}<br>` +
+        `${CHART_METRICS[metric]}: ${r[metric].toLocaleString()}<br>` +
         `GSM8K accuracy: ${formatPercent(r.gsm8k_accuracy)}`
     ),
     hoverinfo: "text",
@@ -112,17 +134,17 @@ function renderChart(submissions, colorMap) {
       symbol: "circle",
       size: 11,
       color: colorMap.get(student),
-      line: { color: PALETTE.cardDark, width: 1 },
+      line: { color: PALETTE.bg, width: 1 },
     },
   }));
 
   const layout = {
-    paper_bgcolor: PALETTE.cardDark,
-    plot_bgcolor: PALETTE.cardDark,
+    paper_bgcolor: "transparent",
+    plot_bgcolor: "transparent",
     font: { color: PALETTE.mutedOnDark, family: "Space Grotesk, system-ui, sans-serif" },
     margin: { l: 60, r: 20, t: 10, b: 50 },
     xaxis: {
-      title: "Trainable parameters",
+      title: metric === "trainable_parameters" ? "Trainable parameters" : "Adapter bytes",
       type: "log",
       gridcolor: "#2c2c2a",
       linecolor: "#3a3a37",
@@ -141,6 +163,35 @@ function renderChart(submissions, colorMap) {
     legend: { font: { color: PALETTE.mutedOnDark } },
   };
 
+  if (baselineRows.length > 0) {
+    const baselineAccuracy = baselineRows[0].gsm8k_accuracy;
+    layout.shapes = [
+      {
+        type: "line",
+        xref: "paper",
+        x0: 0,
+        x1: 1,
+        yref: "y",
+        y0: baselineAccuracy,
+        y1: baselineAccuracy,
+        line: { color: PALETTE.mutedOnDark, width: 2, dash: "dot" },
+      },
+    ];
+    layout.annotations = [
+      {
+        xref: "paper",
+        x: 1,
+        xanchor: "right",
+        yref: "y",
+        y: baselineAccuracy,
+        yanchor: "bottom",
+        text: "Base (no fine-tune)",
+        showarrow: false,
+        font: { color: PALETTE.mutedOnDark, size: 11 },
+      },
+    ];
+  }
+
   Plotly.newPlot(chartEl, traces, layout, { responsive: true, displaylogo: false });
 }
 
@@ -157,14 +208,26 @@ async function loadSubmissions() {
       return;
     }
 
-    const colorMap = studentColorMap(submissions);
+    cachedSubmissions = submissions;
+    cachedColorMap = studentColorMap(submissions);
     renderStats(submissions);
-    renderChart(submissions, colorMap);
-    renderTable(submissions, colorMap);
+    renderChart(submissions, cachedColorMap);
+    renderTable(submissions, cachedColorMap);
     statusEl.hidden = true;
   } catch (error) {
     statusEl.textContent = `Could not load submissions: ${error.message}`;
   }
 }
+
+metricButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    if (!cachedSubmissions) return;
+    metricButtons.forEach((b) => b.classList.remove("active"));
+    button.classList.add("active");
+    const metric = button.dataset.metric;
+    chartMetricLabelEl.textContent = CHART_METRICS[metric];
+    renderChart(cachedSubmissions, cachedColorMap, metric);
+  });
+});
 
 loadSubmissions();
