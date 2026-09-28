@@ -4,19 +4,29 @@
 // fetch() only — it never touches the database directly, and no secrets
 // belong here.
 
-// Set this to the deployed Render service once it exists, e.g.
-// "https://finetuning-arena-api.onrender.com".
 const API_BASE_URL = "https://finetuning-arena.onrender.com";
 
 const statusEl = document.getElementById("status");
+const statsEl = document.getElementById("stats");
 const tableEl = document.getElementById("leaderboard");
 const tbodyEl = tableEl.querySelector("tbody");
 const chartEl = document.getElementById("chart");
 
+const PALETTE = {
+  purple: "#8c7ef2",
+  coral: "#f2795c",
+  yellow: "#f0cb3c",
+  green: "#3ea56e",
+  cardDark: "#171717",
+  ink: "#0b0b0b",
+  inkOnDark: "#f5f5f0",
+  mutedOnDark: "#9c9a92",
+};
+
 // Method identity is carried by marker SYMBOL, not color: a scatter shows
 // every pair of series at once, and with 4 methods there is no CVD-safe
-// all-pairs categorical ordering — so all points share one validated hue
-// (categorical slot 1) and only the symbol changes.
+// all-pairs categorical ordering — so all points share one flat hue
+// and only the symbol changes.
 const METHOD_SYMBOLS = {
   full_ft: "circle",
   partial_ft: "square",
@@ -49,22 +59,21 @@ function renderTable(submissions) {
   tableEl.hidden = false;
 }
 
-function chartColors() {
-  const styles = getComputedStyle(document.querySelector(".viz-root"));
-  const read = (name) => styles.getPropertyValue(name).trim();
-  return {
-    surface: read("--chart-surface"),
-    textPrimary: read("--text-primary"),
-    textSecondary: read("--text-secondary"),
-    textMuted: read("--text-muted"),
-    gridline: read("--gridline"),
-    baseline: read("--baseline"),
-    series1: read("--series-1"),
-  };
+function renderStats(submissions) {
+  const best = submissions.reduce((a, b) => (b.gsm8k_accuracy > a.gsm8k_accuracy ? b : a));
+  const avgGain =
+    submissions.reduce((sum, s) => sum + s.accuracy_gain, 0) / submissions.length;
+  const methodCount = new Set(submissions.map((s) => s.method)).size;
+
+  document.getElementById("stat-count").textContent = submissions.length;
+  document.getElementById("stat-best").textContent = formatPercent(best.gsm8k_accuracy);
+  document.getElementById("stat-gain").textContent = formatPercent(avgGain);
+  document.getElementById("stat-methods").textContent = methodCount;
+
+  statsEl.hidden = false;
 }
 
 function renderChart(submissions) {
-  const colors = chartColors();
   const byMethod = new Map();
   for (const submission of submissions) {
     if (!byMethod.has(submission.method)) byMethod.set(submission.method, []);
@@ -87,34 +96,34 @@ function renderChart(submissions) {
     marker: {
       symbol: METHOD_SYMBOLS[method] || "circle",
       size: 11,
-      color: colors.series1,
-      line: { color: colors.surface, width: 1 },
+      color: PALETTE.coral,
+      line: { color: PALETTE.cardDark, width: 1 },
     },
   }));
 
   const layout = {
-    paper_bgcolor: colors.surface,
-    plot_bgcolor: colors.surface,
-    font: { color: colors.textSecondary, family: "system-ui, -apple-system, sans-serif" },
+    paper_bgcolor: PALETTE.cardDark,
+    plot_bgcolor: PALETTE.cardDark,
+    font: { color: PALETTE.mutedOnDark, family: "Space Grotesk, system-ui, sans-serif" },
     margin: { l: 60, r: 20, t: 10, b: 50 },
     xaxis: {
       title: "Trainable parameters",
       type: "log",
-      gridcolor: colors.gridline,
-      linecolor: colors.baseline,
-      tickcolor: colors.baseline,
-      color: colors.textMuted,
+      gridcolor: "#2c2c2a",
+      linecolor: "#3a3a37",
+      tickcolor: "#3a3a37",
+      color: PALETTE.mutedOnDark,
     },
     yaxis: {
       title: "GSM8K accuracy",
       tickformat: ".0%",
       rangemode: "tozero",
-      gridcolor: colors.gridline,
-      linecolor: colors.baseline,
-      tickcolor: colors.baseline,
-      color: colors.textMuted,
+      gridcolor: "#2c2c2a",
+      linecolor: "#3a3a37",
+      tickcolor: "#3a3a37",
+      color: PALETTE.mutedOnDark,
     },
-    legend: { font: { color: colors.textSecondary } },
+    legend: { font: { color: PALETTE.mutedOnDark } },
   };
 
   Plotly.newPlot(chartEl, traces, layout, { responsive: true, displaylogo: false });
@@ -133,6 +142,7 @@ async function loadSubmissions() {
       return;
     }
 
+    renderStats(submissions);
     renderChart(submissions);
     renderTable(submissions);
     statusEl.hidden = true;

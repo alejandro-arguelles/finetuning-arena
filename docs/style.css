@@ -1,57 +1,162 @@
 :root {
-  color-scheme: light dark;
-  font-family: system-ui, -apple-system, sans-serif;
+  --bg: #0d0d0d;
+  --card-dark: #171717;
+  --cream: #f4efe2;
+  --ink: #0b0b0b;
+  --ink-on-dark: #f5f5f0;
+  --muted-on-dark: #9c9a92;
+
+  --purple: #8c7ef2;
+  --coral: #f2795c;
+  --yellow: #f0cb3c;
+  --green: #3ea56e;
+
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --radius-pill: 999px;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 0 1rem;
-  line-height: 1.5;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink-on-dark);
+  font-family: "Space Grotesk", system-ui, -apple-system, sans-serif;
 }
 
-header {
-  margin-bottom: 1.5rem;
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.viz-root {
-  color-scheme: light;
-  --chart-surface: #fcfcfb;
-  --text-primary: #0b0b0b;
-  --text-secondary: #52514e;
-  --text-muted: #898781;
-  --gridline: #e1e0d9;
-  --baseline: #c3c2b7;
-  --series-1: #2a78d6;
-  margin-bottom: 2rem;
-}
-@media (prefers-color-scheme: dark) {
-  :root:where(:not([data-theme="light"])) .viz-root {
-    color-scheme: dark;
-    --chart-surface: #1a1a19;
-    --text-primary: #ffffff;
-    --text-secondary: #c3c2b7;
-    --text-muted: #898781;
-    --gridline: #2c2c2a;
-    --baseline: #383835;
-    --series-1: #3987e5;
-  }
-}
-:root[data-theme="dark"] .viz-root {
-  color-scheme: dark;
-  --chart-surface: #1a1a19;
-  --text-primary: #ffffff;
-  --text-secondary: #c3c2b7;
-  --text-muted: #898781;
-  --gridline: #2c2c2a;
-  --baseline: #383835;
-  --series-1: #3987e5;
+/* Pills: border only, never filled — the counterpart to the solid tiles/cards below. */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.viz-root h2 {
+.brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.pill {
+  border: 2px solid var(--ink-on-dark);
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  background: transparent;
+  white-space: nowrap;
+}
+
+.pill-muted {
+  border-color: var(--muted-on-dark);
+  color: var(--muted-on-dark);
+}
+
+/* Hero: solid fill, no border. */
+.hero {
+  background: var(--purple);
+  color: var(--ink);
+  border-radius: var(--radius-lg);
+  padding: 2.5rem 2rem;
+}
+
+.hero h1 {
+  margin: 0 0 0.5rem;
+  font-size: clamp(2.2rem, 6vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.hero p {
+  margin: 0;
+  font-size: 1.05rem;
+  opacity: 0.85;
+}
+
+.hero code {
+  background: rgba(11, 11, 11, 0.12);
+  border-radius: 6px;
+  padding: 0.1rem 0.4rem;
+}
+
+.status {
+  color: var(--muted-on-dark);
+}
+
+/* Stat tiles: solid fill, no border, one flat tone each. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.tile {
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  color: var(--ink);
+}
+
+.tile-label {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
+
+.tile-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.tile-coral {
+  background: var(--coral);
+}
+.tile-yellow {
+  background: var(--yellow);
+}
+.tile-green {
+  background: var(--green);
+}
+.tile-dark {
+  background: var(--card-dark);
+  color: var(--ink-on-dark);
+}
+
+/* Cards: solid fill, no border, rounded. */
+.card {
+  background: var(--card-dark);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.card h2 {
+  margin: 0 0 1rem;
   font-size: 1rem;
-  color: var(--text-secondary);
-  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--muted-on-dark);
+}
+
+.card-table {
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.card-table h2 {
+  color: var(--ink);
+  opacity: 0.6;
 }
 
 table {
@@ -62,16 +167,31 @@ table {
 th,
 td {
   text-align: left;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid #8884;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 2px solid rgba(11, 11, 11, 0.1);
+  font-size: 0.95rem;
 }
 
 th {
-  font-weight: 600;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+  opacity: 0.6;
+}
+
+tr:last-child td {
+  border-bottom: none;
 }
 
 footer {
-  margin-top: 2rem;
-  font-size: 0.9rem;
-  opacity: 0.7;
+  display: flex;
+  justify-content: center;
+  padding-top: 0.5rem;
+}
+
+@media (max-width: 700px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }

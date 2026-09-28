@@ -11,7 +11,7 @@ DATABASE_URL environment variable, which Render injects at deploy time.
 import os
 from datetime import datetime, timezone
 
-from sqlalchemy import Column, DateTime, Float, Integer, String, create_engine
+from sqlalchemy import BigInteger, Column, DateTime, Float, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
@@ -30,12 +30,12 @@ class SubmissionRecord(Base):
     method = Column(String, nullable=False)
     lora_rank = Column(Integer, nullable=True)
     target_modules = Column(String, nullable=True)  # stored as a comma-joined string
-    trainable_parameters = Column(Integer, nullable=False)
-    total_parameters = Column(Integer, nullable=False)
+    trainable_parameters = Column(BigInteger, nullable=False)
+    total_parameters = Column(BigInteger, nullable=False)
     training_examples = Column(Integer, nullable=True)
     training_time_seconds = Column(Float, nullable=True)
     peak_vram_mb = Column(Float, nullable=True)
-    adapter_bytes = Column(Integer, nullable=True)
+    adapter_bytes = Column(BigInteger, nullable=True)
     gsm8k_accuracy = Column(Float, nullable=False)
     baseline_accuracy = Column(Float, nullable=False)
     git_commit = Column(String, nullable=True)

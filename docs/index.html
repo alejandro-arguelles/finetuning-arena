@@ -4,40 +4,73 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Fine-Tuning Arena — Leaderboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header>
-    <h1>Fine-Tuning Arena</h1>
-    <p>GSM8K fine-tuning leaderboard for <code>Qwen/Qwen3-0.6B-Base</code>.</p>
-  </header>
+  <div class="page">
+    <header class="topbar">
+      <span class="brand">◆ Fine-Tuning Arena</span>
+      <span class="pill">GSM8K · Qwen3-0.6B-Base</span>
+    </header>
 
-  <main>
-    <p id="status">Loading submissions…</p>
-
-    <section class="viz-root" aria-labelledby="chart-heading">
-      <h2 id="chart-heading">Accuracy vs. trainable parameters</h2>
-      <div id="chart" style="height: 440px"></div>
+    <section class="hero">
+      <h1>Fine-Tuning Arena</h1>
+      <p>Leaderboard for GSM8K fine-tuning runs on <code>Qwen/Qwen3-0.6B-Base</code>.</p>
     </section>
 
-    <table id="leaderboard" hidden>
-      <thead>
-        <tr>
-          <th>Student</th>
-          <th>Run</th>
-          <th>Method</th>
-          <th>GSM8K accuracy</th>
-          <th>Accuracy gain</th>
-          <th>Trainable %</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </main>
+    <p id="status" class="status">Loading submissions…</p>
 
-  <footer>
-    <p>More Plotly charts (accuracy vs adapter size, training time, peak VRAM…) coming soon.</p>
-  </footer>
+    <section id="stats" class="stats" hidden>
+      <div class="tile tile-coral">
+        <span class="tile-label">Submissions</span>
+        <span class="tile-value" id="stat-count">0</span>
+      </div>
+      <div class="tile tile-yellow">
+        <span class="tile-label">Best accuracy</span>
+        <span class="tile-value" id="stat-best">0%</span>
+      </div>
+      <div class="tile tile-green">
+        <span class="tile-label">Avg. accuracy gain</span>
+        <span class="tile-value" id="stat-gain">0%</span>
+      </div>
+      <div class="tile tile-dark">
+        <span class="tile-label">Methods tried</span>
+        <span class="tile-value" id="stat-methods">0</span>
+      </div>
+    </section>
+
+    <section class="card card-chart" aria-labelledby="chart-heading">
+      <h2 id="chart-heading">Accuracy vs. trainable parameters</h2>
+      <div id="chart" style="height: 420px"></div>
+    </section>
+
+    <section class="card card-table">
+      <h2>Runs</h2>
+      <table id="leaderboard" hidden>
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Run</th>
+            <th>Method</th>
+            <th>GSM8K accuracy</th>
+            <th>Accuracy gain</th>
+            <th>Trainable %</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <footer>
+      <span class="pill pill-muted">More charts coming soon — adapter size, training time, peak VRAM</span>
+    </footer>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.34.0/plotly.min.js"></script>
   <script src="app.js"></script>
