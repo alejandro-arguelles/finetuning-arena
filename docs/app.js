@@ -87,7 +87,7 @@ const PALETTE = {
   yellow: "#f0cb3c",
   green: "#3ea56e",
   ink: "#0b0b0b",
-  inkOnDark: "#d8d6cd",
+  inkOnDark: "#b5b3aa",
 };
 
 // Student identity is carried by color, from a validated 8-hue categorical
@@ -104,7 +104,7 @@ const STUDENT_COLORS = [
   "#9085e9", // violet
   "#e66767", // red
 ];
-const STUDENT_COLOR_OTHER = "rgba(216, 214, 205, 0.4)";
+const STUDENT_COLOR_OTHER = "rgba(181, 179, 170, 0.4)";
 
 function studentColorMap(submissions) {
   const students = Array.from(new Set(submissions.map((s) => s.student))).sort();
@@ -204,27 +204,27 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
   const layout = {
     paper_bgcolor: "transparent",
     plot_bgcolor: "transparent",
-    font: { color: PALETTE.mutedOnDark, family: "Space Grotesk, system-ui, sans-serif" },
+    font: { color: PALETTE.inkOnDark, family: "Space Grotesk, system-ui, sans-serif" },
     margin: { l: 60, r: 20, t: 10, b: 50 },
     xaxis: {
       title: view.xLabel,
       type: isLogX ? "log" : "linear",
       dtick: isLogX ? undefined : 1,
-      gridcolor: "rgba(216, 214, 205, 0.15)",
+      gridcolor: "rgba(181, 179, 170, 0.15)",
       linecolor: PALETTE.inkOnDark,
       tickcolor: PALETTE.inkOnDark,
-      color: PALETTE.mutedOnDark,
+      color: PALETTE.inkOnDark,
     },
     yaxis: {
       title: view.yLabel,
       tickformat: isAccuracyView ? ".0%" : undefined,
       rangemode: isAccuracyView ? "tozero" : "normal",
-      gridcolor: "rgba(216, 214, 205, 0.15)",
+      gridcolor: "rgba(181, 179, 170, 0.15)",
       linecolor: PALETTE.inkOnDark,
       tickcolor: PALETTE.inkOnDark,
-      color: PALETTE.mutedOnDark,
+      color: PALETTE.inkOnDark,
     },
-    legend: { font: { color: PALETTE.mutedOnDark } },
+    legend: { font: { color: PALETTE.inkOnDark } },
   };
 
   if (baselineRows.length > 0) {
@@ -238,7 +238,7 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
         yref: "y",
         y0: baselineAccuracy,
         y1: baselineAccuracy,
-        line: { color: PALETTE.mutedOnDark, width: 2, dash: "dot" },
+        line: { color: "rgba(181, 179, 170, 0.5)", width: 1, dash: "dot" },
       },
     ];
     layout.annotations = [
@@ -251,7 +251,7 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
         yanchor: "bottom",
         text: "Base (no fine-tune)",
         showarrow: false,
-        font: { color: PALETTE.mutedOnDark, size: 11 },
+        font: { color: PALETTE.inkOnDark, size: 11 },
       },
     ];
   }
