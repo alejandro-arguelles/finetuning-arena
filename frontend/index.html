@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fine-Tuning Arena — Leaderboard</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Fine-Tuning Arena</h1>
+    <p>GSM8K fine-tuning leaderboard for <code>Qwen/Qwen3-0.6B-Base</code>.</p>
+  </header>
+
+  <main>
+    <p id="status">Loading submissions…</p>
+
+    <table id="leaderboard" hidden>
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Run</th>
+          <th>Method</th>
+          <th>GSM8K accuracy</th>
+          <th>Accuracy gain</th>
+          <th>Trainable %</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </main>
+
+  <footer>
+    <p>Plotly charts (accuracy vs trainable parameters, adapter size, training time, peak VRAM…) coming soon.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
