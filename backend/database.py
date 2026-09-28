@@ -41,7 +41,15 @@ class SubmissionRecord(Base):
     git_commit = Column(String, nullable=True)
 
 
-engine = create_engine(DATABASE_URL) if DATABASE_URL else None
+def _with_psycopg2_driver(url: str) -> str:
+    """Pin the psycopg2 driver explicitly (we install psycopg2-binary), so
+    the connection doesn't depend on which driver SQLAlchemy defaults to."""
+    if url.startswith("postgresql://"):
+        return url.replace("postgresql://", "postgresql+psycopg2://", 1)
+    return url
+
+
+engine = create_engine(_with_psycopg2_driver(DATABASE_URL)) if DATABASE_URL else None
 SessionLocal = (
     sessionmaker(autocommit=False, autoflush=False, bind=engine) if engine else None
 )
