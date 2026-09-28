@@ -36,6 +36,13 @@ const CHART_VIEWS = {
     xLabel: "trainable parameters",
     yLabel: "accuracy gain % per million trained params",
   },
+  rank: {
+    x: "lora_rank",
+    y: "gsm8k_accuracy",
+    xLabel: "LoRA rank",
+    yLabel: "GSM8K accuracy",
+    xType: "linear",
+  },
 };
 
 const PERCENT_FIELDS = new Set(["gsm8k_accuracy", "accuracy_gain", "baseline_accuracy"]);
@@ -47,10 +54,7 @@ function formatMetricValue(field, value) {
 }
 
 function hoverText(r) {
-  const lines = [
-    `${r.student} — ${r.run_name}`,
-    `method: ${r.method}`,
-  ];
+  const lines = [`${r.student} — ${r.run_name}`, `method: ${r.method}`];
   if (r.lora_rank != null) lines.push(`lora_rank: ${r.lora_rank}`);
   if (r.target_modules != null) lines.push(`target_modules: ${r.target_modules.join(", ")}`);
   lines.push(`trainable_parameters: ${r.trainable_parameters.toLocaleString()}`);
@@ -82,10 +86,8 @@ const PALETTE = {
   coral: "#f2795c",
   yellow: "#f0cb3c",
   green: "#3ea56e",
-  cardDark: "#171717",
   ink: "#0b0b0b",
   inkOnDark: "#d8d6cd",
-  mutedOnDark: "#9c9a92",
 };
 
 // Student identity is carried by color, from a validated 8-hue categorical
@@ -102,7 +104,7 @@ const STUDENT_COLORS = [
   "#9085e9", // violet
   "#e66767", // red
 ];
-const STUDENT_COLOR_OTHER = PALETTE.mutedOnDark;
+const STUDENT_COLOR_OTHER = "rgba(216, 214, 205, 0.4)";
 
 function studentColorMap(submissions) {
   const students = Array.from(new Set(submissions.map((s) => s.student))).sort();
@@ -125,6 +127,7 @@ function renderRow(submission, colorMap, rank) {
     <td><span class="student-dot" style="background:${dotColor}"></span>${submission.student}</td>
     <td>${submission.run_name}</td>
     <td>${submission.method}</td>
+    <td>${submission.lora_rank ?? "—"}</td>
     <td>${formatPercent(submission.gsm8k_accuracy)}</td>
     <td>${formatPercent(submission.accuracy_gain)}</td>
     <td>${submission.trainable_percentage.toFixed(3)}%</td>
@@ -157,20 +160,24 @@ function renderStats(submissions) {
 function renderChart(submissions, colorMap, viewKey = "trainable_parameters", studentFilter = "all") {
   const view = CHART_VIEWS[viewKey];
   const isAccuracyView = view.y === "gsm8k_accuracy";
+  const isLogX = view.xType !== "linear";
 
   // trainable_parameters == 0 means "no fine-tuning" (the base model). It has
   // no meaningful position on a log-scale axis (log(0) is undefined, so
   // Plotly would just silently drop the point) — it belongs on the chart as
-  // a reference line instead, not as a scatter point (only meaningful for the
-  // accuracy views — there's no "baseline efficiency" to draw a line at).
-  // Rows missing the selected metric (e.g. adapter_bytes on an older
-  // submission) are likewise left out of that view rather than plotted at 0.
+  // a reference line instead, not as a scatter point, only for log-x views.
+  // Rows missing the selected metric (e.g. lora_rank on a full-FT submission,
+  // or adapter_bytes on an older one) are likewise left out of that view
+  // rather than plotted at 0/null.
   // The baseline reference line always reflects everyone, regardless of the
   // student filter — it's a fixed reference point, not one student's data.
   const filtered =
     studentFilter === "all" ? submissions : submissions.filter((s) => s.student === studentFilter);
-  const plottable = filtered.filter((s) => s.trainable_parameters > 0 && s[view.x] > 0);
-  const baselineRows = isAccuracyView ? submissions.filter((s) => s.trainable_parameters <= 0) : [];
+  const plottable = filtered.filter(
+    (s) => s[view.x] != null && (!isLogX || (s.trainable_parameters > 0 && s[view.x] > 0))
+  );
+  const baselineRows =
+    isAccuracyView && isLogX ? submissions.filter((s) => s.trainable_parameters <= 0) : [];
 
   const byStudent = new Map();
   for (const submission of plottable) {
@@ -201,7 +208,8 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
     margin: { l: 60, r: 20, t: 10, b: 50 },
     xaxis: {
       title: view.xLabel,
-      type: "log",
+      type: isLogX ? "log" : "linear",
+      dtick: isLogX ? undefined : 1,
       gridcolor: "rgba(216, 214, 205, 0.15)",
       linecolor: PALETTE.inkOnDark,
       tickcolor: PALETTE.inkOnDark,
