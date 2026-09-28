@@ -11,18 +11,70 @@ const statsEl = document.getElementById("stats");
 const tableEl = document.getElementById("leaderboard");
 const tbodyEl = tableEl.querySelector("tbody");
 const chartEl = document.getElementById("chart");
-const chartMetricLabelEl = document.getElementById("chart-metric-label");
+const chartHeadingEl = document.getElementById("chart-heading-text");
 const metricButtons = document.querySelectorAll(".metric-btn");
+const studentFilterEl = document.getElementById("student-filter");
 
-const CHART_METRICS = {
-  trainable_parameters: "trainable parameters",
-  adapter_bytes: "adapter bytes",
+// Each view picks what goes on the X and Y axis. accuracy_gain_per_million_params
+// is already computed server-side (accuracy_gain / (trainable_parameters / 1e6)).
+const CHART_VIEWS = {
+  trainable_parameters: {
+    x: "trainable_parameters",
+    y: "gsm8k_accuracy",
+    xLabel: "trainable parameters",
+    yLabel: "GSM8K accuracy",
+  },
+  adapter_bytes: {
+    x: "adapter_bytes",
+    y: "gsm8k_accuracy",
+    xLabel: "adapter bytes",
+    yLabel: "GSM8K accuracy",
+  },
+  efficiency: {
+    x: "trainable_parameters",
+    y: "accuracy_gain_per_million_params",
+    xLabel: "trainable parameters",
+    yLabel: "accuracy gain % per million trained params",
+  },
 };
 
-// Cached after the first successful load, so toggling the metric just
-// re-renders the chart instead of re-fetching.
+const PERCENT_FIELDS = new Set(["gsm8k_accuracy", "accuracy_gain", "baseline_accuracy"]);
+
+function formatMetricValue(field, value) {
+  if (PERCENT_FIELDS.has(field)) return formatPercent(value);
+  if (field === "accuracy_gain_per_million_params") return value.toFixed(4);
+  return value.toLocaleString();
+}
+
+function hoverText(r) {
+  const lines = [
+    `${r.student} — ${r.run_name}`,
+    `method: ${r.method}`,
+  ];
+  if (r.lora_rank != null) lines.push(`lora_rank: ${r.lora_rank}`);
+  if (r.target_modules != null) lines.push(`target_modules: ${r.target_modules.join(", ")}`);
+  lines.push(`trainable_parameters: ${r.trainable_parameters.toLocaleString()}`);
+  lines.push(`total_parameters: ${r.total_parameters.toLocaleString()}`);
+  lines.push(`trainable_percentage: ${r.trainable_percentage.toFixed(3)}%`);
+  if (r.training_examples != null) lines.push(`training_examples: ${r.training_examples.toLocaleString()}`);
+  if (r.training_time_seconds != null)
+    lines.push(`training_time_seconds: ${r.training_time_seconds.toLocaleString()}`);
+  if (r.peak_vram_mb != null) lines.push(`peak_vram_mb: ${r.peak_vram_mb.toLocaleString()}`);
+  if (r.adapter_bytes != null) lines.push(`adapter_bytes: ${r.adapter_bytes.toLocaleString()}`);
+  lines.push(`gsm8k_accuracy: ${formatPercent(r.gsm8k_accuracy)}`);
+  lines.push(`baseline_accuracy: ${formatPercent(r.baseline_accuracy)}`);
+  lines.push(`accuracy_gain: ${formatPercent(r.accuracy_gain)}`);
+  lines.push(`accuracy_gain_per_million_params: ${r.accuracy_gain_per_million_params.toFixed(4)}`);
+  if (r.git_commit != null) lines.push(`git_commit: ${r.git_commit}`);
+  return lines.join("<br>");
+}
+
+// Cached after the first successful load, so toggling the metric or the
+// student filter just re-renders the chart instead of re-fetching.
 let cachedSubmissions = null;
 let cachedColorMap = null;
+let currentViewKey = "trainable_parameters";
+let currentStudentFilter = "all";
 
 const PALETTE = {
   bg: "#0d0d0d",
@@ -65,10 +117,11 @@ function formatPercent(fraction) {
   return `${(fraction * 100).toFixed(1)}%`;
 }
 
-function renderRow(submission, colorMap) {
+function renderRow(submission, colorMap, rank) {
   const row = document.createElement("tr");
   const dotColor = colorMap.get(submission.student);
   row.innerHTML = `
+    <td>${rank}</td>
     <td><span class="student-dot" style="background:${dotColor}"></span>${submission.student}</td>
     <td>${submission.run_name}</td>
     <td>${submission.method}</td>
@@ -83,7 +136,7 @@ function renderTable(submissions, colorMap) {
   submissions
     .slice()
     .sort((a, b) => b.gsm8k_accuracy - a.gsm8k_accuracy)
-    .forEach((submission) => tbodyEl.appendChild(renderRow(submission, colorMap)));
+    .forEach((submission, i) => tbodyEl.appendChild(renderRow(submission, colorMap, i + 1)));
   tableEl.hidden = false;
 }
 
@@ -101,15 +154,23 @@ function renderStats(submissions) {
   statsEl.hidden = false;
 }
 
-function renderChart(submissions, colorMap, metric = "trainable_parameters") {
+function renderChart(submissions, colorMap, viewKey = "trainable_parameters", studentFilter = "all") {
+  const view = CHART_VIEWS[viewKey];
+  const isAccuracyView = view.y === "gsm8k_accuracy";
+
   // trainable_parameters == 0 means "no fine-tuning" (the base model). It has
   // no meaningful position on a log-scale axis (log(0) is undefined, so
   // Plotly would just silently drop the point) — it belongs on the chart as
-  // a reference line instead, not as a scatter point, in either metric view.
+  // a reference line instead, not as a scatter point (only meaningful for the
+  // accuracy views — there's no "baseline efficiency" to draw a line at).
   // Rows missing the selected metric (e.g. adapter_bytes on an older
   // submission) are likewise left out of that view rather than plotted at 0.
-  const plottable = submissions.filter((s) => s.trainable_parameters > 0 && s[metric] > 0);
-  const baselineRows = submissions.filter((s) => s.trainable_parameters <= 0);
+  // The baseline reference line always reflects everyone, regardless of the
+  // student filter — it's a fixed reference point, not one student's data.
+  const filtered =
+    studentFilter === "all" ? submissions : submissions.filter((s) => s.student === studentFilter);
+  const plottable = filtered.filter((s) => s.trainable_parameters > 0 && s[view.x] > 0);
+  const baselineRows = isAccuracyView ? submissions.filter((s) => s.trainable_parameters <= 0) : [];
 
   const byStudent = new Map();
   for (const submission of plottable) {
@@ -119,14 +180,9 @@ function renderChart(submissions, colorMap, metric = "trainable_parameters") {
 
   const traces = Array.from(byStudent.entries()).map(([student, rows]) => ({
     name: student,
-    x: rows.map((r) => r[metric]),
-    y: rows.map((r) => r.gsm8k_accuracy),
-    text: rows.map(
-      (r) =>
-        `${r.student} — ${r.run_name}<br>method: ${r.method}<br>` +
-        `${CHART_METRICS[metric]}: ${r[metric].toLocaleString()}<br>` +
-        `GSM8K accuracy: ${formatPercent(r.gsm8k_accuracy)}`
-    ),
+    x: rows.map((r) => r[view.x]),
+    y: rows.map((r) => r[view.y]),
+    text: rows.map(hoverText),
     hoverinfo: "text",
     mode: "markers",
     type: "scatter",
@@ -144,20 +200,20 @@ function renderChart(submissions, colorMap, metric = "trainable_parameters") {
     font: { color: PALETTE.mutedOnDark, family: "Space Grotesk, system-ui, sans-serif" },
     margin: { l: 60, r: 20, t: 10, b: 50 },
     xaxis: {
-      title: metric === "trainable_parameters" ? "Trainable parameters" : "Adapter bytes",
+      title: view.xLabel,
       type: "log",
-      gridcolor: "#2c2c2a",
-      linecolor: "#3a3a37",
-      tickcolor: "#3a3a37",
+      gridcolor: "rgba(216, 214, 205, 0.15)",
+      linecolor: PALETTE.inkOnDark,
+      tickcolor: PALETTE.inkOnDark,
       color: PALETTE.mutedOnDark,
     },
     yaxis: {
-      title: "GSM8K accuracy",
-      tickformat: ".0%",
-      rangemode: "tozero",
-      gridcolor: "#2c2c2a",
-      linecolor: "#3a3a37",
-      tickcolor: "#3a3a37",
+      title: view.yLabel,
+      tickformat: isAccuracyView ? ".0%" : undefined,
+      rangemode: isAccuracyView ? "tozero" : "normal",
+      gridcolor: "rgba(216, 214, 205, 0.15)",
+      linecolor: PALETTE.inkOnDark,
+      tickcolor: PALETTE.inkOnDark,
       color: PALETTE.mutedOnDark,
     },
     legend: { font: { color: PALETTE.mutedOnDark } },
@@ -210,8 +266,18 @@ async function loadSubmissions() {
 
     cachedSubmissions = submissions;
     cachedColorMap = studentColorMap(submissions);
+
+    Array.from(new Set(submissions.map((s) => s.student)))
+      .sort()
+      .forEach((student) => {
+        const option = document.createElement("option");
+        option.value = student;
+        option.textContent = student;
+        studentFilterEl.appendChild(option);
+      });
+
     renderStats(submissions);
-    renderChart(submissions, cachedColorMap);
+    renderChart(submissions, cachedColorMap, currentViewKey, currentStudentFilter);
     renderTable(submissions, cachedColorMap);
     statusEl.hidden = true;
   } catch (error) {
@@ -224,10 +290,17 @@ metricButtons.forEach((button) => {
     if (!cachedSubmissions) return;
     metricButtons.forEach((b) => b.classList.remove("active"));
     button.classList.add("active");
-    const metric = button.dataset.metric;
-    chartMetricLabelEl.textContent = CHART_METRICS[metric];
-    renderChart(cachedSubmissions, cachedColorMap, metric);
+    currentViewKey = button.dataset.metric;
+    const view = CHART_VIEWS[currentViewKey];
+    chartHeadingEl.textContent = `${view.yLabel} vs. ${view.xLabel}`;
+    renderChart(cachedSubmissions, cachedColorMap, currentViewKey, currentStudentFilter);
   });
+});
+
+studentFilterEl.addEventListener("change", () => {
+  if (!cachedSubmissions) return;
+  currentStudentFilter = studentFilterEl.value;
+  renderChart(cachedSubmissions, cachedColorMap, currentViewKey, currentStudentFilter);
 });
 
 loadSubmissions();

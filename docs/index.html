@@ -49,15 +49,21 @@
       </div>
     </section>
 
-    <div class="metric-toggle" role="group" aria-label="Chart X-axis metric">
-      <button class="metric-btn metric-btn-purple active" data-metric="trainable_parameters">
-        Trainable parameters
-      </button>
-      <button class="metric-btn metric-btn-coral" data-metric="adapter_bytes">Adapter bytes</button>
+    <div class="chart-controls">
+      <div class="metric-toggle" role="group" aria-label="Chart view">
+        <button class="metric-btn metric-btn-purple active" data-metric="trainable_parameters">
+          Trainable parameters
+        </button>
+        <button class="metric-btn metric-btn-coral" data-metric="adapter_bytes">Adapter bytes</button>
+        <button class="metric-btn metric-btn-purple" data-metric="efficiency">Gain per M params</button>
+      </div>
+      <select id="student-filter" class="student-filter" aria-label="Filter chart by student">
+        <option value="all">All</option>
+      </select>
     </div>
 
     <section class="card card-chart" aria-labelledby="chart-heading">
-      <h2 id="chart-heading">Accuracy vs. <span id="chart-metric-label">trainable parameters</span></h2>
+      <h2 id="chart-heading"><span id="chart-heading-text">GSM8K accuracy vs. trainable parameters</span></h2>
       <div id="chart" style="height: 420px"></div>
     </section>
 
@@ -66,6 +72,7 @@
       <table id="leaderboard" hidden>
         <thead>
           <tr>
+            <th>#</th>
             <th>Student</th>
             <th>Run</th>
             <th>Method</th>

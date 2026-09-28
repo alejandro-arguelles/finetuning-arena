@@ -65,9 +65,9 @@ body {
   color: var(--muted-on-dark);
 }
 
-/* Hero: solid white fill, no border. */
+/* Hero: solid fill, no border. */
 .hero {
-  background: #ffffff;
+  background: var(--purple);
   color: var(--ink);
   border-radius: var(--radius-lg);
   padding: 2.5rem 2rem;
@@ -108,7 +108,7 @@ body {
   margin: 0.75rem 0;
 }
 
-/* Stat tiles: black fill, white outline, no color-coding — flush against each other. */
+/* Stat tiles: solid fill, no border, one flat tone each — flush against each other. */
 .stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -116,18 +116,12 @@ body {
 }
 
 .tile {
-  background: var(--bg);
-  border: 2px solid var(--ink-on-dark);
   border-radius: var(--radius-md);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  color: var(--ink-on-dark);
-}
-
-.tile + .tile {
-  margin-left: -2px;
+  color: var(--ink);
 }
 
 .tile-label {
@@ -140,24 +134,65 @@ body {
   font-weight: 700;
 }
 
-/* Cards: black fill, white outline, rounded. */
+.tile-coral {
+  background: var(--coral);
+}
+.tile-yellow {
+  background: var(--yellow);
+}
+.tile-green {
+  background: var(--green);
+}
+.tile-dark {
+  background: var(--card-dark);
+  color: var(--ink-on-dark);
+}
+
+/* Cards: solid fill, no border, rounded. */
 .card {
-  background: var(--bg);
-  border: 2px solid var(--ink-on-dark);
+  background: var(--card-dark);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
 }
 
-.card + .card {
-  margin-top: -2px;
+.card-chart {
+  background: transparent;
+  border: 2px solid var(--ink-on-dark);
+}
+
+.chart-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 3.5rem;
+  margin-bottom: 1rem;
+  padding: 0 0.25rem;
 }
 
 .metric-toggle {
   display: flex;
   gap: 0;
-  padding: 0 0.25rem;
-  margin-top: 3.5rem;
-  margin-bottom: 1rem;
+}
+
+.student-filter {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  background: transparent;
+  border: 2px solid var(--ink-on-dark);
+  color: var(--ink-on-dark);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.student-filter option {
+  background: var(--bg);
+  color: var(--ink-on-dark);
 }
 
 .metric-btn {
@@ -197,7 +232,13 @@ body {
   color: var(--muted-on-dark);
 }
 
+.card-table {
+  background: var(--cream);
+  color: var(--ink);
+}
+
 .card-table h2 {
+  color: var(--ink);
   opacity: 0.6;
 }
 
@@ -210,7 +251,7 @@ th,
 td {
   text-align: left;
   padding: 0.6rem 0.5rem;
-  border-bottom: 2px solid rgba(216, 214, 205, 0.15);
+  border-bottom: 2px solid rgba(11, 11, 11, 0.1);
   font-size: 0.95rem;
 }
 
