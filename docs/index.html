@@ -15,6 +15,11 @@
   <main>
     <p id="status">Loading submissions…</p>
 
+    <section class="viz-root" aria-labelledby="chart-heading">
+      <h2 id="chart-heading">Accuracy vs. trainable parameters</h2>
+      <div id="chart" style="height: 440px"></div>
+    </section>
+
     <table id="leaderboard" hidden>
       <thead>
         <tr>
@@ -31,9 +36,10 @@
   </main>
 
   <footer>
-    <p>Plotly charts (accuracy vs trainable parameters, adapter size, training time, peak VRAM…) coming soon.</p>
+    <p>More Plotly charts (accuracy vs adapter size, training time, peak VRAM…) coming soon.</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.34.0/plotly.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
