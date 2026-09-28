@@ -49,6 +49,32 @@ body {
   font-size: 1.1rem;
 }
 
+.brand-partner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  /* Space Grotesk's cap-height is ~0.714em, so this puts the "M" at ~22px —
+     the same height as the logo mark next to it. */
+  font-size: 1.9rem;
+  font-weight: 300;
+  color: var(--ink-on-dark);
+}
+
+.brand-partner-logo {
+  display: inline-block;
+  width: 24px;
+  height: 29px;
+  background-color: var(--ink-on-dark);
+  -webkit-mask-image: url("Msolo.svg");
+  mask-image: url("Msolo.svg");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
 .pill {
   padding: 0.4rem 1rem;
   font-size: 0.85rem;
