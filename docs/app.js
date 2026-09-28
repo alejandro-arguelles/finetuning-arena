@@ -23,25 +23,40 @@ const PALETTE = {
   mutedOnDark: "#9c9a92",
 };
 
-// Method identity is carried by marker SYMBOL, not color: a scatter shows
-// every pair of series at once, and with 4 methods there is no CVD-safe
-// all-pairs categorical ordering — so all points share one flat hue
-// and only the symbol changes.
-const METHOD_SYMBOLS = {
-  full_ft: "circle",
-  partial_ft: "square",
-  lora: "diamond",
-  qlora: "triangle-up",
-};
+// Student identity is carried by color, from a validated 8-hue categorical
+// order (dark-surface steps, since the chart card is dark). Never cycled or
+// extended: a 9th+ student folds into a neutral "other" gray rather than
+// inventing a new hue that hasn't been checked for colorblind safety.
+const STUDENT_COLORS = [
+  "#3987e5", // blue
+  "#d95926", // orange
+  "#199e70", // aqua
+  "#c98500", // yellow
+  "#d55181", // magenta
+  "#008300", // green
+  "#9085e9", // violet
+  "#e66767", // red
+];
+const STUDENT_COLOR_OTHER = PALETTE.mutedOnDark;
+
+function studentColorMap(submissions) {
+  const students = Array.from(new Set(submissions.map((s) => s.student))).sort();
+  const map = new Map();
+  students.forEach((student, i) => {
+    map.set(student, i < STUDENT_COLORS.length ? STUDENT_COLORS[i] : STUDENT_COLOR_OTHER);
+  });
+  return map;
+}
 
 function formatPercent(fraction) {
   return `${(fraction * 100).toFixed(1)}%`;
 }
 
-function renderRow(submission) {
+function renderRow(submission, colorMap) {
   const row = document.createElement("tr");
+  const dotColor = colorMap.get(submission.student);
   row.innerHTML = `
-    <td>${submission.student}</td>
+    <td><span class="student-dot" style="background:${dotColor}"></span>${submission.student}</td>
     <td>${submission.run_name}</td>
     <td>${submission.method}</td>
     <td>${formatPercent(submission.gsm8k_accuracy)}</td>
@@ -51,11 +66,11 @@ function renderRow(submission) {
   return row;
 }
 
-function renderTable(submissions) {
+function renderTable(submissions, colorMap) {
   submissions
     .slice()
     .sort((a, b) => b.gsm8k_accuracy - a.gsm8k_accuracy)
-    .forEach((submission) => tbodyEl.appendChild(renderRow(submission)));
+    .forEach((submission) => tbodyEl.appendChild(renderRow(submission, colorMap)));
   tableEl.hidden = false;
 }
 
@@ -73,15 +88,15 @@ function renderStats(submissions) {
   statsEl.hidden = false;
 }
 
-function renderChart(submissions) {
-  const byMethod = new Map();
+function renderChart(submissions, colorMap) {
+  const byStudent = new Map();
   for (const submission of submissions) {
-    if (!byMethod.has(submission.method)) byMethod.set(submission.method, []);
-    byMethod.get(submission.method).push(submission);
+    if (!byStudent.has(submission.student)) byStudent.set(submission.student, []);
+    byStudent.get(submission.student).push(submission);
   }
 
-  const traces = Array.from(byMethod.entries()).map(([method, rows]) => ({
-    name: method,
+  const traces = Array.from(byStudent.entries()).map(([student, rows]) => ({
+    name: student,
     x: rows.map((r) => r.trainable_parameters),
     y: rows.map((r) => r.gsm8k_accuracy),
     text: rows.map(
@@ -94,9 +109,9 @@ function renderChart(submissions) {
     mode: "markers",
     type: "scatter",
     marker: {
-      symbol: METHOD_SYMBOLS[method] || "circle",
+      symbol: "circle",
       size: 11,
-      color: PALETTE.coral,
+      color: colorMap.get(student),
       line: { color: PALETTE.cardDark, width: 1 },
     },
   }));
@@ -142,9 +157,10 @@ async function loadSubmissions() {
       return;
     }
 
+    const colorMap = studentColorMap(submissions);
     renderStats(submissions);
-    renderChart(submissions);
-    renderTable(submissions);
+    renderChart(submissions, colorMap);
+    renderTable(submissions, colorMap);
     statusEl.hidden = true;
   } catch (error) {
     statusEl.textContent = `Could not load submissions: ${error.message}`;

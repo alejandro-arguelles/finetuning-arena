@@ -184,6 +184,15 @@ tr:last-child td {
   border-bottom: none;
 }
 
+.student-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
 footer {
   display: flex;
   justify-content: center;
