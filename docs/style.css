@@ -8,8 +8,9 @@
   --yellow: #f0cb3c;
   --green: #3ea56e;
 
-  --radius-lg: 0px;
-  --radius-md: 0px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
   --radius-pill: 999px;
 }
 
@@ -25,9 +26,9 @@ body {
 }
 
 .page {
-  max-width: 960px;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+  padding: 1.5rem 0.25rem 3rem;
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -57,9 +58,13 @@ body {
 
 /* Hero: solid fill, no border. */
 .hero {
-  background: var(--ink-on-dark);
+  background: var(--purple);
   color: var(--ink);
-  border-radius: var(--radius-lg);
+  /* Bottom-right sits above the invisible "Methods tried" tile, so it's a
+     free corner; bottom-left sits above the coral tile, which is visible
+     and touching, so it stays square. On mobile (2-col stats), both bottom
+     tiles are visible, so bottom-right must go square too — see below. */
+  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0;
   padding: 2.5rem 2rem;
 }
 
@@ -107,13 +112,37 @@ body {
 }
 
 .tile {
-  border-radius: var(--radius-md);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  color: var(--ink-on-dark);
-  background: transparent;
+  color: var(--ink);
+}
+
+/* Corner rounding follows what's visually adjacent, not DOM order: the
+   "Methods tried" tile (tile-dark) has no visible fill/border, so a
+   neighbor's edge against it reads as free, not touching. */
+.tile:first-child {
+  border-radius: 0 0 0 var(--radius-md);
+}
+
+.tile:nth-child(3) {
+  border-radius: 0 0 var(--radius-md) 0;
+}
+
+@media (max-width: 700px) {
+  .hero {
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  .tile:first-child {
+    border-radius: 0;
+  }
+  .tile:nth-child(2) {
+    border-radius: 0 0 var(--radius-md) 0;
+  }
+  .tile:nth-child(3) {
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+  }
 }
 
 .tile-label {
@@ -126,10 +155,18 @@ body {
   font-weight: 700;
 }
 
-.tile-coral,
-.tile-yellow,
+.tile-coral {
+  background: var(--coral);
+}
+.tile-yellow {
+  background: var(--yellow);
+}
 .tile-green {
-  border: 2px solid var(--ink-on-dark);
+  background: var(--green);
+}
+.tile-dark {
+  background: transparent;
+  color: var(--ink-on-dark);
 }
 
 /* Cards: solid fill, no border, rounded. */
@@ -142,6 +179,12 @@ body {
 .card-chart {
   background: transparent;
   border: 2px solid var(--ink-on-dark);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  padding: 1rem;
+}
+
+.card-table {
+  border-radius: var(--radius-lg);
 }
 
 .chart-controls {
@@ -165,7 +208,7 @@ body {
   font-size: 0.85rem;
   font-weight: 500;
   padding: 0.5rem 1.1rem;
-  border-radius: 0;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
   cursor: pointer;
   background: transparent;
   border: 2px solid var(--ink-on-dark);
@@ -184,11 +227,18 @@ body {
   font-size: 0.85rem;
   font-weight: 500;
   padding: 0.5rem 1.1rem;
-  border-radius: 0;
   cursor: pointer;
   background: transparent;
   border: 2px solid;
   color: var(--ink-on-dark);
+}
+
+.metric-btn:first-child {
+  border-radius: var(--radius-sm) 0 0 0;
+}
+
+.metric-btn:last-child {
+  border-radius: 0 var(--radius-sm) 0 0;
 }
 
 .metric-btn + .metric-btn {

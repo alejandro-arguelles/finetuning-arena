@@ -205,7 +205,7 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
     paper_bgcolor: "transparent",
     plot_bgcolor: "transparent",
     font: { color: PALETTE.inkOnDark, family: "Space Grotesk, system-ui, sans-serif" },
-    margin: { l: 60, r: 20, t: 10, b: 50 },
+    margin: { l: 55, r: 10, t: 5, b: 40 },
     xaxis: {
       title: view.xLabel,
       type: isLogX ? "log" : "linear",
