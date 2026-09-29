@@ -88,10 +88,10 @@ let currentModelFilter = "all";
 
 const PALETTE = {
   bg: "#0d0d0d",
-  purple: "#6045f4",
-  coral: "#50e7d3",
-  yellow: "#ebebed",
-  green: "#241e4e",
+  purple: "#8c7ef2",
+  coral: "#f2795c",
+  yellow: "#f0cb3c",
+  green: "#3ea56e",
   ink: "#0b0b0b",
   inkOnDark: "#e4e3de",
 };

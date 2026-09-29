@@ -4,14 +4,14 @@
   --ink-on-dark: #e4e3de;
 
   /* Names are legacy/positional, not literal color descriptions. */
-  --purple: #6045f4; /* Royal Blue — hero */
-  --coral: #50e7d3; /* Turquoise Blue — Submissions tile, Adapter bytes/Rank buttons */
-  --yellow: #ebebed; /* Athens Gray — Best accuracy tile */
-  --green: #241e4e; /* Port Gore — Avg. accuracy gain tile */
+  --purple: #8c7ef2;
+  --coral: #f2795c;
+  --yellow: #f0cb3c;
+  --green: #3ea56e;
 
-  --radius-lg: 0px;
-  --radius-md: 0px;
-  --radius-sm: 0px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
   --radius-pill: 999px;
   /* A single rounded corner (the rest at 0) clamps to the box's full
      min(width, height) instead of half of it, which overshoots into an
@@ -93,8 +93,8 @@ body {
 
 /* Hero: solid fill, no border. */
 .hero {
-  background: transparent;
-  color: var(--ink-on-dark);
+  background: var(--purple);
+  color: var(--ink);
   /* Bottom-right sits above the invisible "Methods tried" tile, so it's a
      free corner; bottom-left sits above the coral tile, which is visible
      and touching, so it stays square. On mobile (2-col stats), both bottom
@@ -118,7 +118,7 @@ body {
 }
 
 .hero code {
-  background: rgba(181, 179, 170, 0.18);
+  background: rgba(11, 11, 11, 0.12);
   padding: 0.1rem 0.4rem;
 }
 
@@ -146,7 +146,6 @@ body {
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
   margin-top: -1.5px;
-  padding: 0 1.25rem;
 }
 
 .tile + .tile {
@@ -158,26 +157,18 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  color: var(--ink-on-dark);
+  color: var(--ink);
 }
 
 /* Corner rounding follows what's visually adjacent, not DOM order: the
    "Methods tried" tile (tile-dark) has no visible fill/border, so a
    neighbor's edge against it reads as free, not touching. */
 .tile:first-child {
-  border-radius: var(--radius-md) 0 0 var(--radius-md);
-}
-
-.tile:nth-child(2) {
-  border-radius: 0;
+  border-radius: 0 0 0 var(--radius-md);
 }
 
 .tile:nth-child(3) {
-  border-radius: 0;
-}
-
-.tile:last-child {
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-radius: 0 0 var(--radius-md) 0;
 }
 
 @media (max-width: 700px) {
@@ -185,16 +176,13 @@ body {
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   }
   .tile:first-child {
-    border-radius: var(--radius-md) 0 0 0;
+    border-radius: 0;
   }
   .tile:nth-child(2) {
-    border-radius: 0 var(--radius-md) 0 0;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
   }
   .tile:nth-child(3) {
-    border-radius: 0 0 0 var(--radius-md);
-  }
-  .tile:last-child {
-    border-radius: 0 0 var(--radius-md) 0;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
   }
 }
 
@@ -208,12 +196,18 @@ body {
   font-weight: 700;
 }
 
-.tile-coral,
-.tile-yellow,
-.tile-green,
+.tile-coral {
+  background: var(--coral);
+}
+.tile-yellow {
+  background: var(--yellow);
+}
+.tile-green {
+  background: var(--green);
+}
 .tile-dark {
   background: transparent;
-  border: 1.5px solid var(--ink-on-dark);
+  color: var(--ink-on-dark);
 }
 
 
