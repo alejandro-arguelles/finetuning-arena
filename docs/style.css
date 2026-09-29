@@ -249,6 +249,14 @@ body {
   gap: 0;
 }
 
+.metric-btn:first-child {
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+}
+
+.metric-btn:last-child {
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+}
+
 .metric-btn + .metric-btn {
   margin-left: -1.5px;
 }
@@ -286,7 +294,7 @@ body {
   font-size: 0.85rem;
   font-weight: 500;
   padding: 0.5rem 1.1rem;
-  border-radius: var(--radius-pill);
+  border-radius: 0;
   cursor: pointer;
   background: transparent;
   border: 1.5px solid;
