@@ -1,7 +1,7 @@
 :root {
-  --bg: #1a1a1a;
+  --bg: #14161a;
   --ink: #0b0b0b;
-  --ink-on-dark: #b8b6ab;
+  --ink-on-dark: #c7c5ba;
 
   /* Names are legacy/positional, not literal color descriptions. */
   --purple: #8c7ef2;

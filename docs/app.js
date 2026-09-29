@@ -87,13 +87,13 @@ let currentModelFilter = "all";
 // `task` column exists, so people can see the affordance is coming.
 
 const PALETTE = {
-  bg: "#1a1a1a",
+  bg: "#14161a",
   purple: "#8c7ef2",
   coral: "#f2795c",
   yellow: "#f0cb3c",
   green: "#3ea56e",
   ink: "#0b0b0b",
-  inkOnDark: "#b8b6ab",
+  inkOnDark: "#c7c5ba",
 };
 
 // Student identity is carried by color, from a validated 8-hue categorical
@@ -110,7 +110,7 @@ const STUDENT_COLORS = [
   "#9085e9", // violet
   "#e66767", // red
 ];
-const STUDENT_COLOR_OTHER = "rgba(184, 182, 171, 0.4)";
+const STUDENT_COLOR_OTHER = "rgba(199, 197, 186, 0.4)";
 
 function studentColorMap(submissions) {
   const students = Array.from(new Set(submissions.map((s) => s.student))).sort();
@@ -223,7 +223,7 @@ function renderChart(
       title: view.xLabel,
       type: isLogX ? "log" : "linear",
       dtick: isLogX ? undefined : 1,
-      gridcolor: "rgba(184, 182, 171, 0.15)",
+      gridcolor: "rgba(199, 197, 186, 0.15)",
       linecolor: PALETTE.inkOnDark,
       tickcolor: PALETTE.inkOnDark,
       color: PALETTE.inkOnDark,
@@ -232,7 +232,7 @@ function renderChart(
       title: view.yLabel,
       tickformat: isAccuracyView ? ".0%" : undefined,
       rangemode: isAccuracyView ? "tozero" : "normal",
-      gridcolor: "rgba(184, 182, 171, 0.15)",
+      gridcolor: "rgba(199, 197, 186, 0.15)",
       linecolor: PALETTE.inkOnDark,
       tickcolor: PALETTE.inkOnDark,
       color: PALETTE.inkOnDark,
@@ -251,7 +251,7 @@ function renderChart(
         yref: "y",
         y0: baselineAccuracy,
         y1: baselineAccuracy,
-        line: { color: "rgba(184, 182, 171, 0.5)", width: 1, dash: "dot" },
+        line: { color: "rgba(199, 197, 186, 0.5)", width: 1, dash: "dot" },
       },
     ];
     layout.annotations = [
