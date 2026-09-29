@@ -93,13 +93,8 @@ body {
 
 /* Hero: solid fill, no border. */
 .hero {
-  background: var(--purple);
-  color: var(--ink);
-  /* Bottom-right sits above the invisible "Methods tried" tile, so it's a
-     free corner; bottom-left sits above the coral tile, which is visible
-     and touching, so it stays square. On mobile (2-col stats), both bottom
-     tiles are visible, so bottom-right must go square too — see below. */
-  border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0;
+  background: transparent;
+  color: var(--ink-on-dark);
   padding: 1.25rem 1.25rem 2rem;
 }
 
@@ -118,7 +113,7 @@ body {
 }
 
 .hero code {
-  background: rgba(11, 11, 11, 0.12);
+  background: rgba(181, 179, 170, 0.18);
   padding: 0.1rem 0.4rem;
 }
 
@@ -145,7 +140,6 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
-  margin-top: -1.5px;
 }
 
 .tile + .tile {
@@ -157,32 +151,34 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  color: var(--ink);
+  color: var(--ink-on-dark);
+  background: transparent;
+  border: 1.5px solid var(--ink-on-dark);
 }
 
 /* Corner rounding follows what's visually adjacent, not DOM order: the
    "Methods tried" tile (tile-dark) has no visible fill/border, so a
    neighbor's edge against it reads as free, not touching. */
 .tile:first-child {
-  border-radius: 0 0 0 var(--radius-md);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
 }
 
-.tile:nth-child(3) {
-  border-radius: 0 0 var(--radius-md) 0;
+.tile:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
 @media (max-width: 700px) {
-  .hero {
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
-  }
   .tile:first-child {
-    border-radius: 0;
+    border-radius: var(--radius-md) 0 0 0;
   }
   .tile:nth-child(2) {
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    border-radius: 0 var(--radius-md) 0 0;
   }
   .tile:nth-child(3) {
-    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    border-radius: 0 0 0 var(--radius-md);
+  }
+  .tile:last-child {
+    border-radius: 0 0 var(--radius-md) 0;
   }
 }
 
@@ -196,19 +192,6 @@ body {
   font-weight: 700;
 }
 
-.tile-coral {
-  background: var(--coral);
-}
-.tile-yellow {
-  background: var(--yellow);
-}
-.tile-green {
-  background: var(--green);
-}
-.tile-dark {
-  background: transparent;
-  color: var(--ink-on-dark);
-}
 
 
 /* Cards: solid fill, no border, rounded. */
