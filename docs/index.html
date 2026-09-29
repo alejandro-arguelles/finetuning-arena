@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Fine-Tuning Arena — Leaderboard</title>
+  <title>Multiplication Fine-Tuning Arena — Leaderboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -15,11 +15,11 @@
 <body>
   <div class="page">
     <section class="hero">
-      <h1>DORL Fine-Tuning Arena</h1>
-      <p>Leaderboard for GSM8K fine-tuning runs on <code>Qwen/Qwen3-0.6B-Base</code>.</p>
+      <h1>DORL Multiplication Arena</h1>
+      <p>Leaderboard for multi-digit multiplication fine-tuning runs on <code>Qwen/Qwen3-0.6B-Base</code>.</p>
       <p class="hero-note">
-        GSM8K is a dataset of grade-school math word problems.
-        <span class="hero-example">Example: <em>"Natalia sold clips to 48 friends in April, and half as many in May. How many clips did she sell altogether?"</em> → <strong>72</strong>.</span>
+        Models are fine-tuned on 2-to-5-digit multiplication problems, then evaluated on 2-to-6-digit problems, scoring the overall percentage of correct answers.
+        <span class="hero-example">Example: <em>"47 × 812"</em> → <strong>38,164</strong>.</span>
       </p>
     </section>
 
@@ -59,7 +59,7 @@
     </div>
 
     <section class="card card-chart" aria-labelledby="chart-heading">
-      <h2 id="chart-heading"><span id="chart-heading-text">GSM8K accuracy vs. trainable parameters</span></h2>
+      <h2 id="chart-heading"><span id="chart-heading-text">Multiplication accuracy vs. trainable parameters</span></h2>
       <div id="chart" style="height: 620px"></div>
     </section>
 
@@ -73,7 +73,7 @@
             <th>Run</th>
             <th>Method</th>
             <th>LoRA rank</th>
-            <th>GSM8K accuracy</th>
+            <th>Multiplication accuracy</th>
             <th>Accuracy gain</th>
             <th>Trainable %</th>
           </tr>
