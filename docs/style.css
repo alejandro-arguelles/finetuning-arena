@@ -1,7 +1,7 @@
 :root {
   --bg: #0d0d0d;
   --ink: #0b0b0b;
-  --ink-on-dark: #d6d4c9;
+  --ink-on-dark: #c2c0b5;
 
   /* Names are legacy/positional, not literal color descriptions. */
   --purple: #6045f4; /* Royal Blue — hero */
@@ -83,7 +83,7 @@ body {
 }
 
 .pill {
-  border: 2px solid var(--ink-on-dark);
+  border: 1.5px solid var(--ink-on-dark);
   border-radius: var(--radius-pill);
   padding: 0.4rem 1rem;
   font-size: 0.85rem;
@@ -114,7 +114,7 @@ body {
 .hero p {
   margin: 0;
   font-size: 1.35rem;
-  opacity: 0.85;
+  font-weight: 300;
 }
 
 .hero code {
@@ -125,7 +125,7 @@ body {
 .hero-note {
   margin-top: 0.75rem;
   font-size: 1.05rem;
-  opacity: 0.75;
+  font-weight: 300;
 }
 
 .hero-example {
@@ -135,8 +135,9 @@ body {
 
 .status {
   color: var(--ink-on-dark);
-  opacity: 0.6;
+  font-weight: 300;
   margin: 0.75rem 0;
+  padding: 0 1.25rem;
 }
 
 /* Stat tiles: solid fill, no border, one flat tone each — flush against each other. */
@@ -144,12 +145,12 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
-  margin-top: -2px;
+  margin-top: -1.5px;
   padding: 0 1.25rem;
 }
 
 .tile + .tile {
-  margin-left: -2px;
+  margin-left: -1.5px;
 }
 
 .tile {
@@ -199,7 +200,7 @@ body {
 
 .tile-label {
   font-size: 0.85rem;
-  opacity: 0.75;
+  font-weight: 300;
 }
 
 .tile-value {
@@ -212,7 +213,7 @@ body {
 .tile-green,
 .tile-dark {
   background: transparent;
-  border: 2px solid var(--ink-on-dark);
+  border: 1.5px solid var(--ink-on-dark);
 }
 
 
@@ -225,7 +226,7 @@ body {
 
 .card-chart {
   background: transparent;
-  padding: 1rem;
+  padding: 1rem 1.25rem;
 }
 
 .card-table {
@@ -239,13 +240,17 @@ body {
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 6rem;
-  margin-bottom: -2px;
-  padding: 0;
+  margin-bottom: -1.5px;
+  padding: 0 1.25rem;
 }
 
 .metric-toggle {
   display: flex;
-  gap: 0.6rem;
+  gap: 0;
+}
+
+.metric-btn + .metric-btn {
+  margin-left: -1.5px;
 }
 
 .student-filter {
@@ -256,7 +261,7 @@ body {
   border-radius: 0;
   cursor: pointer;
   background: transparent;
-  border: 2px solid var(--ink-on-dark);
+  border: 1.5px solid var(--ink-on-dark);
   color: var(--ink-on-dark);
   appearance: none;
   -webkit-appearance: none;
@@ -275,7 +280,7 @@ body {
   border-radius: var(--radius-pill);
   cursor: pointer;
   background: transparent;
-  border: 2px solid;
+  border: 1.5px solid;
   color: var(--ink-on-dark);
 }
 
@@ -296,13 +301,15 @@ body {
 .card h2 {
   margin: 0 0 1rem;
   font-size: 1rem;
-  font-weight: 500;
+  font-weight: 300;
   color: var(--ink-on-dark);
-  opacity: 0.6;
 }
 
-.card-table h2 {
-  opacity: 1;
+#chart-heading {
+  /* Aligns with where the button's TEXT starts above (chart-controls'
+     left inset + the button's own left padding), not just the button's
+     box edge. */
+  margin-left: 1.1rem;
 }
 
 table {
