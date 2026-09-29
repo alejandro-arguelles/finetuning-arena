@@ -1,12 +1,13 @@
 :root {
   --bg: #0d0d0d;
   --ink: #0b0b0b;
-  --ink-on-dark: #b5b3aa;
+  --ink-on-dark: #d6d4c9;
 
-  --purple: #8c7ef2;
-  --coral: #f2795c;
-  --yellow: #f0cb3c;
-  --green: #3ea56e;
+  /* Names are legacy/positional, not literal color descriptions. */
+  --purple: #6045f4; /* Royal Blue — hero */
+  --coral: #50e7d3; /* Turquoise Blue — Submissions tile, Adapter bytes/Rank buttons */
+  --yellow: #ebebed; /* Athens Gray — Best accuracy tile */
+  --green: #241e4e; /* Port Gore — Avg. accuracy gain tile */
 
   --radius-lg: 0px;
   --radius-md: 0px;
@@ -92,37 +93,38 @@ body {
 
 /* Hero: solid fill, no border. */
 .hero {
-  background: var(--purple);
-  color: var(--ink);
+  background: transparent;
+  color: var(--ink-on-dark);
   /* Bottom-right sits above the invisible "Methods tried" tile, so it's a
      free corner; bottom-left sits above the coral tile, which is visible
      and touching, so it stays square. On mobile (2-col stats), both bottom
      tiles are visible, so bottom-right must go square too — see below. */
   border-radius: var(--radius-lg) var(--radius-lg) var(--radius-lg) 0;
-  padding: 2.5rem 2rem;
+  padding: 1.25rem 1.25rem 2rem;
 }
 
 .hero h1 {
   margin: 0 0 0.5rem;
-  font-size: clamp(2.2rem, 6vw, 3.2rem);
+  margin-left: -0.04em; /* optical alignment: bold glyphs at this size carry more left bearing than the lighter body text below */
+  font-size: clamp(3rem, 8vw, 4.6rem);
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
 .hero p {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: 1.35rem;
   opacity: 0.85;
 }
 
 .hero code {
-  background: rgba(11, 11, 11, 0.12);
+  background: rgba(181, 179, 170, 0.18);
   padding: 0.1rem 0.4rem;
 }
 
 .hero-note {
   margin-top: 0.75rem;
-  font-size: 0.85rem;
+  font-size: 1.05rem;
   opacity: 0.75;
 }
 
@@ -142,6 +144,12 @@ body {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 0;
+  margin-top: -2px;
+  padding: 0 1.25rem;
+}
+
+.tile + .tile {
+  margin-left: -2px;
 }
 
 .tile {
@@ -149,18 +157,26 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
-  color: var(--ink);
+  color: var(--ink-on-dark);
 }
 
 /* Corner rounding follows what's visually adjacent, not DOM order: the
    "Methods tried" tile (tile-dark) has no visible fill/border, so a
    neighbor's edge against it reads as free, not touching. */
 .tile:first-child {
-  border-radius: 0 0 0 var(--radius-md);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.tile:nth-child(2) {
+  border-radius: 0;
 }
 
 .tile:nth-child(3) {
-  border-radius: 0 0 var(--radius-md) 0;
+  border-radius: 0;
+}
+
+.tile:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
 @media (max-width: 700px) {
@@ -168,13 +184,16 @@ body {
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   }
   .tile:first-child {
-    border-radius: 0;
+    border-radius: var(--radius-md) 0 0 0;
   }
   .tile:nth-child(2) {
-    border-radius: 0 0 var(--radius-md) 0;
+    border-radius: 0 var(--radius-md) 0 0;
   }
   .tile:nth-child(3) {
-    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    border-radius: 0 0 0 var(--radius-md);
+  }
+  .tile:last-child {
+    border-radius: 0 0 var(--radius-md) 0;
   }
 }
 
@@ -188,19 +207,14 @@ body {
   font-weight: 700;
 }
 
-.tile-coral {
-  background: var(--coral);
-}
-.tile-yellow {
-  background: var(--yellow);
-}
-.tile-green {
-  background: var(--green);
-}
+.tile-coral,
+.tile-yellow,
+.tile-green,
 .tile-dark {
   background: transparent;
-  color: var(--ink-on-dark);
+  border: 2px solid var(--ink-on-dark);
 }
+
 
 /* Cards: solid fill, no border, rounded. */
 .card {
@@ -211,8 +225,6 @@ body {
 
 .card-chart {
   background: transparent;
-  border: 2px solid var(--ink-on-dark);
-  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
   padding: 1rem;
 }
 
@@ -233,7 +245,7 @@ body {
 
 .metric-toggle {
   display: flex;
-  gap: 0;
+  gap: 0.6rem;
 }
 
 .student-filter {
@@ -241,7 +253,7 @@ body {
   font-size: 0.85rem;
   font-weight: 500;
   padding: 0.5rem 1.1rem;
-  border-radius: var(--radius-corner) var(--radius-corner) 0 0;
+  border-radius: 0;
   cursor: pointer;
   background: transparent;
   border: 2px solid var(--ink-on-dark);
@@ -260,22 +272,11 @@ body {
   font-size: 0.85rem;
   font-weight: 500;
   padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   background: transparent;
   border: 2px solid;
   color: var(--ink-on-dark);
-}
-
-.metric-btn:first-child {
-  border-radius: var(--radius-corner) 0 0 0;
-}
-
-.metric-btn:last-child {
-  border-radius: 0 var(--radius-corner) 0 0;
-}
-
-.metric-btn + .metric-btn {
-  margin-left: -2px;
 }
 
 .metric-btn.active {

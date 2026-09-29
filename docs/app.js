@@ -82,12 +82,12 @@ let currentStudentFilter = "all";
 
 const PALETTE = {
   bg: "#0d0d0d",
-  purple: "#8c7ef2",
-  coral: "#f2795c",
-  yellow: "#f0cb3c",
-  green: "#3ea56e",
+  purple: "#6045f4",
+  coral: "#50e7d3",
+  yellow: "#ebebed",
+  green: "#241e4e",
   ink: "#0b0b0b",
-  inkOnDark: "#b5b3aa",
+  inkOnDark: "#d6d4c9",
 };
 
 // Student identity is carried by color, from a validated 8-hue categorical
@@ -104,7 +104,7 @@ const STUDENT_COLORS = [
   "#9085e9", // violet
   "#e66767", // red
 ];
-const STUDENT_COLOR_OTHER = "rgba(181, 179, 170, 0.4)";
+const STUDENT_COLOR_OTHER = "rgba(214, 212, 201, 0.4)";
 
 function studentColorMap(submissions) {
   const students = Array.from(new Set(submissions.map((s) => s.student))).sort();
@@ -210,7 +210,7 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
       title: view.xLabel,
       type: isLogX ? "log" : "linear",
       dtick: isLogX ? undefined : 1,
-      gridcolor: "rgba(181, 179, 170, 0.15)",
+      gridcolor: "rgba(214, 212, 201, 0.15)",
       linecolor: PALETTE.inkOnDark,
       tickcolor: PALETTE.inkOnDark,
       color: PALETTE.inkOnDark,
@@ -219,7 +219,7 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
       title: view.yLabel,
       tickformat: isAccuracyView ? ".0%" : undefined,
       rangemode: isAccuracyView ? "tozero" : "normal",
-      gridcolor: "rgba(181, 179, 170, 0.15)",
+      gridcolor: "rgba(214, 212, 201, 0.15)",
       linecolor: PALETTE.inkOnDark,
       tickcolor: PALETTE.inkOnDark,
       color: PALETTE.inkOnDark,
@@ -238,7 +238,7 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
         yref: "y",
         y0: baselineAccuracy,
         y1: baselineAccuracy,
-        line: { color: "rgba(181, 179, 170, 0.5)", width: 1, dash: "dot" },
+        line: { color: "rgba(214, 212, 201, 0.5)", width: 1, dash: "dot" },
       },
     ];
     layout.annotations = [
