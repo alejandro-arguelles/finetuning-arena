@@ -24,13 +24,13 @@ const CHART_VIEWS = {
     x: "trainable_parameters",
     y: "accuracy",
     xLabel: "trainable parameters",
-    yLabel: "Multiplication accuracy",
+    yLabel: "accuracy",
   },
   adapter_bytes: {
     x: "adapter_bytes",
     y: "accuracy",
     xLabel: "adapter bytes",
-    yLabel: "Multiplication accuracy",
+    yLabel: "accuracy",
   },
   efficiency: {
     x: "trainable_parameters",
@@ -42,7 +42,7 @@ const CHART_VIEWS = {
     x: "lora_rank",
     y: "accuracy",
     xLabel: "LoRA rank",
-    yLabel: "Multiplication accuracy",
+    yLabel: "accuracy",
     xType: "linear",
   },
 };

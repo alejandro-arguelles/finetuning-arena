@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Multiplication Fine-Tuning Arena — Leaderboard</title>
+  <title>Fine-Tuning Arena — Leaderboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -16,9 +16,9 @@
   <div class="page">
     <section class="hero">
       <h1>DORL Fine-Tuning Arena</h1>
-      <p>Leaderboard for multi-digit multiplication fine-tuning runs on <code>Qwen/Qwen3-0.6B-Base</code>.</p>
+      <p>Leaderboard for arithmetic fine-tuning runs on <code>Qwen/Qwen3-0.6B-Base</code>.</p>
       <p class="hero-note">
-        Models are fine-tuned on 2-to-5-digit multiplication problems, then evaluated on 2-to-6-digit problems, scoring the overall percentage of correct answers.
+        Each run picks a task (multiplication, addition/subtraction, …), fine-tunes on it, then evaluates on held-out problems for that same task, scoring the overall percentage of correct answers.
         <span class="hero-example">Example: <em>"47 × 812"</em> → <strong>38,164</strong>.</span>
       </p>
     </section>
@@ -67,7 +67,7 @@
     </div>
 
     <section class="card card-chart" aria-labelledby="chart-heading">
-      <h2 id="chart-heading"><span id="chart-heading-text">Multiplication accuracy vs. trainable parameters</span></h2>
+      <h2 id="chart-heading"><span id="chart-heading-text">Accuracy vs. trainable parameters</span></h2>
       <div id="chart" style="height: 620px"></div>
     </section>
 
@@ -81,7 +81,7 @@
             <th>Run</th>
             <th>Method</th>
             <th>LoRA rank</th>
-            <th>Multiplication accuracy</th>
+            <th>Accuracy</th>
             <th>Accuracy gain</th>
             <th>Trainable %</th>
           </tr>
