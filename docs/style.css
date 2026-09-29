@@ -1,7 +1,7 @@
 :root {
   --bg: #0d0d0d;
   --ink: #0b0b0b;
-  --ink-on-dark: #dbd9ce;
+  --ink-on-dark: #e4e3de;
 
   /* Names are legacy/positional, not literal color descriptions. */
   --purple: #6045f4; /* Royal Blue — hero */
@@ -250,6 +250,15 @@ body {
 }
 
 .metric-btn + .metric-btn {
+  margin-left: -1.5px;
+}
+
+.filters {
+  display: flex;
+  gap: 0;
+}
+
+.filters .student-filter + .student-filter {
   margin-left: -1.5px;
 }
 

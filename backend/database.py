@@ -36,7 +36,7 @@ class SubmissionRecord(Base):
     training_time_seconds = Column(Float, nullable=True)
     peak_vram_mb = Column(Float, nullable=True)
     adapter_bytes = Column(BigInteger, nullable=True)
-    gsm8k_accuracy = Column(Float, nullable=False)
+    accuracy = Column(Float, nullable=False)
     baseline_accuracy = Column(Float, nullable=False)
     git_commit = Column(String, nullable=True)
 

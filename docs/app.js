@@ -14,19 +14,21 @@ const chartEl = document.getElementById("chart");
 const chartHeadingEl = document.getElementById("chart-heading-text");
 const metricButtons = document.querySelectorAll(".metric-btn");
 const studentFilterEl = document.getElementById("student-filter");
+const modelFilterEl = document.getElementById("model-filter");
+const taskFilterEl = document.getElementById("task-filter");
 
 // Each view picks what goes on the X and Y axis. accuracy_gain_per_million_params
 // is already computed server-side (accuracy_gain / (trainable_parameters / 1e6)).
 const CHART_VIEWS = {
   trainable_parameters: {
     x: "trainable_parameters",
-    y: "gsm8k_accuracy",
+    y: "accuracy",
     xLabel: "trainable parameters",
     yLabel: "Multiplication accuracy",
   },
   adapter_bytes: {
     x: "adapter_bytes",
-    y: "gsm8k_accuracy",
+    y: "accuracy",
     xLabel: "adapter bytes",
     yLabel: "Multiplication accuracy",
   },
@@ -38,14 +40,14 @@ const CHART_VIEWS = {
   },
   rank: {
     x: "lora_rank",
-    y: "gsm8k_accuracy",
+    y: "accuracy",
     xLabel: "LoRA rank",
     yLabel: "Multiplication accuracy",
     xType: "linear",
   },
 };
 
-const PERCENT_FIELDS = new Set(["gsm8k_accuracy", "accuracy_gain", "baseline_accuracy"]);
+const PERCENT_FIELDS = new Set(["accuracy", "accuracy_gain", "baseline_accuracy"]);
 
 function formatMetricValue(field, value) {
   if (PERCENT_FIELDS.has(field)) return formatPercent(value);
@@ -65,7 +67,7 @@ function hoverText(r) {
     lines.push(`training_time_seconds: ${r.training_time_seconds.toLocaleString()}`);
   if (r.peak_vram_mb != null) lines.push(`peak_vram_mb: ${r.peak_vram_mb.toLocaleString()}`);
   if (r.adapter_bytes != null) lines.push(`adapter_bytes: ${r.adapter_bytes.toLocaleString()}`);
-  lines.push(`gsm8k_accuracy: ${formatPercent(r.gsm8k_accuracy)}`);
+  lines.push(`accuracy: ${formatPercent(r.accuracy)}`);
   lines.push(`baseline_accuracy: ${formatPercent(r.baseline_accuracy)}`);
   lines.push(`accuracy_gain: ${formatPercent(r.accuracy_gain)}`);
   lines.push(`accuracy_gain_per_million_params: ${r.accuracy_gain_per_million_params.toFixed(4)}`);
@@ -79,6 +81,10 @@ let cachedSubmissions = null;
 let cachedColorMap = null;
 let currentViewKey = "trainable_parameters";
 let currentStudentFilter = "all";
+let currentModelFilter = "all";
+// Task filtering has no backing field yet (every submission today is the
+// same multiplication task) — this select is a placeholder for when a
+// `task` column exists, so people can see the affordance is coming.
 
 const PALETTE = {
   bg: "#0d0d0d",
@@ -87,7 +93,7 @@ const PALETTE = {
   yellow: "#ebebed",
   green: "#241e4e",
   ink: "#0b0b0b",
-  inkOnDark: "#cfcdc2",
+  inkOnDark: "#e4e3de",
 };
 
 // Student identity is carried by color, from a validated 8-hue categorical
@@ -104,7 +110,7 @@ const STUDENT_COLORS = [
   "#9085e9", // violet
   "#e66767", // red
 ];
-const STUDENT_COLOR_OTHER = "rgba(207, 205, 194, 0.4)";
+const STUDENT_COLOR_OTHER = "rgba(228, 227, 222, 0.4)";
 
 function studentColorMap(submissions) {
   const students = Array.from(new Set(submissions.map((s) => s.student))).sort();
@@ -128,7 +134,7 @@ function renderRow(submission, colorMap, rank) {
     <td>${submission.run_name}</td>
     <td>${submission.method}</td>
     <td>${submission.lora_rank ?? "—"}</td>
-    <td>${formatPercent(submission.gsm8k_accuracy)}</td>
+    <td>${formatPercent(submission.accuracy)}</td>
     <td>${formatPercent(submission.accuracy_gain)}</td>
     <td>${submission.trainable_percentage.toFixed(3)}%</td>
   `;
@@ -138,28 +144,34 @@ function renderRow(submission, colorMap, rank) {
 function renderTable(submissions, colorMap) {
   submissions
     .slice()
-    .sort((a, b) => b.gsm8k_accuracy - a.gsm8k_accuracy)
+    .sort((a, b) => b.accuracy - a.accuracy)
     .forEach((submission, i) => tbodyEl.appendChild(renderRow(submission, colorMap, i + 1)));
   tableEl.hidden = false;
 }
 
 function renderStats(submissions) {
-  const best = submissions.reduce((a, b) => (b.gsm8k_accuracy > a.gsm8k_accuracy ? b : a));
+  const best = submissions.reduce((a, b) => (b.accuracy > a.accuracy ? b : a));
   const avgGain =
     submissions.reduce((sum, s) => sum + s.accuracy_gain, 0) / submissions.length;
   const methodCount = new Set(submissions.map((s) => s.method)).size;
 
   document.getElementById("stat-count").textContent = submissions.length;
-  document.getElementById("stat-best").textContent = formatPercent(best.gsm8k_accuracy);
+  document.getElementById("stat-best").textContent = formatPercent(best.accuracy);
   document.getElementById("stat-gain").textContent = formatPercent(avgGain);
   document.getElementById("stat-methods").textContent = methodCount;
 
   statsEl.hidden = false;
 }
 
-function renderChart(submissions, colorMap, viewKey = "trainable_parameters", studentFilter = "all") {
+function renderChart(
+  submissions,
+  colorMap,
+  viewKey = "trainable_parameters",
+  studentFilter = "all",
+  modelFilter = "all"
+) {
   const view = CHART_VIEWS[viewKey];
-  const isAccuracyView = view.y === "gsm8k_accuracy";
+  const isAccuracyView = view.y === "accuracy";
   const isLogX = view.xType !== "linear";
 
   // trainable_parameters == 0 means "no fine-tuning" (the base model). It has
@@ -171,8 +183,9 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
   // rather than plotted at 0/null.
   // The baseline reference line always reflects everyone, regardless of the
   // student filter — it's a fixed reference point, not one student's data.
-  const filtered =
-    studentFilter === "all" ? submissions : submissions.filter((s) => s.student === studentFilter);
+  const filtered = submissions
+    .filter((s) => studentFilter === "all" || s.student === studentFilter)
+    .filter((s) => modelFilter === "all" || s.base_model === modelFilter);
   const plottable = filtered.filter(
     (s) => s[view.x] != null && (!isLogX || (s.trainable_parameters > 0 && s[view.x] > 0))
   );
@@ -210,7 +223,7 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
       title: view.xLabel,
       type: isLogX ? "log" : "linear",
       dtick: isLogX ? undefined : 1,
-      gridcolor: "rgba(207, 205, 194, 0.15)",
+      gridcolor: "rgba(228, 227, 222, 0.15)",
       linecolor: PALETTE.inkOnDark,
       tickcolor: PALETTE.inkOnDark,
       color: PALETTE.inkOnDark,
@@ -219,7 +232,7 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
       title: view.yLabel,
       tickformat: isAccuracyView ? ".0%" : undefined,
       rangemode: isAccuracyView ? "tozero" : "normal",
-      gridcolor: "rgba(207, 205, 194, 0.15)",
+      gridcolor: "rgba(228, 227, 222, 0.15)",
       linecolor: PALETTE.inkOnDark,
       tickcolor: PALETTE.inkOnDark,
       color: PALETTE.inkOnDark,
@@ -228,7 +241,7 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
   };
 
   if (baselineRows.length > 0) {
-    const baselineAccuracy = baselineRows[0].gsm8k_accuracy;
+    const baselineAccuracy = baselineRows[0].accuracy;
     layout.shapes = [
       {
         type: "line",
@@ -238,7 +251,7 @@ function renderChart(submissions, colorMap, viewKey = "trainable_parameters", st
         yref: "y",
         y0: baselineAccuracy,
         y1: baselineAccuracy,
-        line: { color: "rgba(207, 205, 194, 0.5)", width: 1, dash: "dot" },
+        line: { color: "rgba(228, 227, 222, 0.5)", width: 1, dash: "dot" },
       },
     ];
     layout.annotations = [
@@ -284,8 +297,17 @@ async function loadSubmissions() {
         studentFilterEl.appendChild(option);
       });
 
+    Array.from(new Set(submissions.map((s) => s.base_model)))
+      .sort()
+      .forEach((model) => {
+        const option = document.createElement("option");
+        option.value = model;
+        option.textContent = model;
+        modelFilterEl.appendChild(option);
+      });
+
     renderStats(submissions);
-    renderChart(submissions, cachedColorMap, currentViewKey, currentStudentFilter);
+    renderChart(submissions, cachedColorMap, currentViewKey, currentStudentFilter, currentModelFilter);
     renderTable(submissions, cachedColorMap);
     statusEl.hidden = true;
   } catch (error) {
@@ -301,14 +323,24 @@ metricButtons.forEach((button) => {
     currentViewKey = button.dataset.metric;
     const view = CHART_VIEWS[currentViewKey];
     chartHeadingEl.textContent = `${view.yLabel} vs. ${view.xLabel}`;
-    renderChart(cachedSubmissions, cachedColorMap, currentViewKey, currentStudentFilter);
+    renderChart(cachedSubmissions, cachedColorMap, currentViewKey, currentStudentFilter, currentModelFilter);
   });
 });
 
 studentFilterEl.addEventListener("change", () => {
   if (!cachedSubmissions) return;
   currentStudentFilter = studentFilterEl.value;
-  renderChart(cachedSubmissions, cachedColorMap, currentViewKey, currentStudentFilter);
+  renderChart(cachedSubmissions, cachedColorMap, currentViewKey, currentStudentFilter, currentModelFilter);
 });
+
+modelFilterEl.addEventListener("change", () => {
+  if (!cachedSubmissions) return;
+  currentModelFilter = modelFilterEl.value;
+  renderChart(cachedSubmissions, cachedColorMap, currentViewKey, currentStudentFilter, currentModelFilter);
+});
+
+// No `task` field on submissions yet, so this filter only ever shows
+// "All tasks" for now — kept enabled (not disabled) so it doesn't look
+// visually broken while there's nothing else to pick.
 
 loadSubmissions();

@@ -54,7 +54,7 @@ def health() -> HealthResponse:
 
 
 def _with_derived_fields(data: dict) -> SubmissionOut:
-    accuracy_gain = data["gsm8k_accuracy"] - data["baseline_accuracy"]
+    accuracy_gain = data["accuracy"] - data["baseline_accuracy"]
     trainable_percentage = 100 * data["trainable_parameters"] / data["total_parameters"]
     per_million = data["trainable_parameters"] / 1e6
     accuracy_gain_per_million_params = accuracy_gain / per_million if per_million else 0.0

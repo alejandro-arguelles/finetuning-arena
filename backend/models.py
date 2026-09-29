@@ -35,7 +35,7 @@ class SubmissionCreate(BaseModel):
     peak_vram_mb: Optional[float] = None
     adapter_bytes: Optional[int] = None
 
-    gsm8k_accuracy: float = Field(ge=0, le=1)
+    accuracy: float = Field(ge=0, le=1)
     baseline_accuracy: float = Field(ge=0, le=1)
 
     git_commit: Optional[str] = None

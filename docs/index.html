@@ -53,9 +53,17 @@
         <button class="metric-btn metric-btn-purple" data-metric="efficiency">Gain per M params</button>
         <button class="metric-btn metric-btn-coral" data-metric="rank">Rank &nbsp;</button>
       </div>
-      <select id="student-filter" class="student-filter" aria-label="Filter chart by student">
-        <option value="all">&nbsp;All&nbsp;</option>
-      </select>
+      <div class="filters">
+        <select id="student-filter" class="student-filter" aria-label="Filter chart by student">
+          <option value="all">&nbsp;All&nbsp;</option>
+        </select>
+        <select id="model-filter" class="student-filter" aria-label="Filter chart by base model">
+          <option value="all">&nbsp;All models&nbsp;</option>
+        </select>
+        <select id="task-filter" class="student-filter" aria-label="Filter chart by task">
+          <option value="all">&nbsp;All tasks&nbsp;</option>
+        </select>
+      </div>
     </div>
 
     <section class="card card-chart" aria-labelledby="chart-heading">
