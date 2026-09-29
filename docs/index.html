@@ -16,6 +16,7 @@
   <div class="page">
     <header class="topbar">
       <span class="brand">DORL Fine-Tuning Arena</span>
+      <span class="pill">GSM8K · Qwen3-0.6B-Base</span>
     </header>
 
     <section class="hero">
@@ -26,8 +27,6 @@
         <span class="hero-example">Example: <em>"Natalia sold clips to 48 friends in April, and half as many in May. How many clips did she sell altogether?"</em> → <strong>72</strong>.</span>
       </p>
     </section>
-
-    <p id="status" class="status">Loading submissions…</p>
 
     <section id="stats" class="stats" hidden>
       <div class="tile tile-coral">
@@ -48,17 +47,19 @@
       </div>
     </section>
 
+    <p id="status" class="status">Loading submissions…</p>
+
     <div class="chart-controls">
       <div class="metric-toggle" role="group" aria-label="Chart view">
         <button class="metric-btn metric-btn-purple active" data-metric="trainable_parameters">
-          Trainable parameters
+          &nbsp;&nbsp;Trainable parameters
         </button>
         <button class="metric-btn metric-btn-coral" data-metric="adapter_bytes">Adapter bytes</button>
         <button class="metric-btn metric-btn-purple" data-metric="efficiency">Gain per M params</button>
-        <button class="metric-btn metric-btn-coral" data-metric="rank">Rank</button>
+        <button class="metric-btn metric-btn-coral" data-metric="rank">Rank &nbsp;</button>
       </div>
       <select id="student-filter" class="student-filter" aria-label="Filter chart by student">
-        <option value="all">All</option>
+        <option value="all">&nbsp;All&nbsp;</option>
       </select>
     </div>
 

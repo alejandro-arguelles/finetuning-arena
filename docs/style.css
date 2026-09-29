@@ -8,10 +8,16 @@
   --yellow: #f0cb3c;
   --green: #3ea56e;
 
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --radius-sm: 10px;
+  --radius-lg: 0px;
+  --radius-md: 0px;
+  --radius-sm: 0px;
   --radius-pill: 999px;
+  /* A single rounded corner (the rest at 0) clamps to the box's full
+     min(width, height) instead of half of it, which overshoots into an
+     exaggerated sweep. This is the "fully round, one corner" radius,
+     tuned to these buttons' actual height so it reads as a normal pill
+     corner instead. */
+  --radius-corner: 32px;
 }
 
 * {
@@ -41,7 +47,7 @@ body {
   justify-content: space-between;
   gap: 1rem;
   flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+  margin-bottom: 3.5rem;
 }
 
 .brand {
@@ -76,6 +82,8 @@ body {
 }
 
 .pill {
+  border: 2px solid var(--ink-on-dark);
+  border-radius: var(--radius-pill);
   padding: 0.4rem 1rem;
   font-size: 0.85rem;
   background: transparent;
@@ -109,7 +117,6 @@ body {
 
 .hero code {
   background: rgba(11, 11, 11, 0.12);
-  border-radius: 6px;
   padding: 0.1rem 0.4rem;
 }
 
@@ -234,7 +241,7 @@ body {
   font-size: 0.85rem;
   font-weight: 500;
   padding: 0.5rem 1.1rem;
-  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  border-radius: var(--radius-corner) var(--radius-corner) 0 0;
   cursor: pointer;
   background: transparent;
   border: 2px solid var(--ink-on-dark);
@@ -260,11 +267,11 @@ body {
 }
 
 .metric-btn:first-child {
-  border-radius: var(--radius-sm) 0 0 0;
+  border-radius: var(--radius-corner) 0 0 0;
 }
 
 .metric-btn:last-child {
-  border-radius: 0 var(--radius-sm) 0 0;
+  border-radius: 0 var(--radius-corner) 0 0;
 }
 
 .metric-btn + .metric-btn {
