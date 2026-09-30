@@ -119,7 +119,7 @@ function renderRow(submission, colorMap, rank) {
   row.innerHTML = `
     <td class="num">${rank}</td>
     <td><span class="student-dot" style="background:${dotColor}"></span>${submission.student}</td>
-    <td>${submission.run_name}</td>
+    <td class="mono">${submission.run_name}</td>
     <td>${submission.method}</td>
     <td class="num">${submission.lora_rank ?? "—"}</td>
     <td class="num">${formatPercent(submission.accuracy)}</td>

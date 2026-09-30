@@ -314,7 +314,6 @@ thead th {
   color: var(--ink);
   font-weight: 300;
   padding: 0 0.6rem 0.5rem 0;
-  border-bottom: 2px solid var(--rule);
 }
 
 thead th:first-child {
@@ -323,7 +322,6 @@ thead th:first-child {
 
 td {
   padding: 0.55rem 0.6rem 0.55rem 0;
-  border-bottom: 1px solid var(--rule);
   font-size: 0.9rem;
 }
 
@@ -331,8 +329,12 @@ td:first-child {
   padding-left: 0;
 }
 
-.num {
+.num,
+.mono {
   font-family: var(--font-mono);
+}
+
+.num {
   text-align: right;
 }
 
