@@ -159,23 +159,8 @@ body {
 
 /* ---------- Intro ---------- */
 
-.hero-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 3rem;
-  margin-top: 2.5rem;
-  padding-bottom: 1.5rem;
-  /* A single rule spanning the full viewport, same trick as the masthead —
-     not a box, just one line edge to edge of the screen. */
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  padding-left: calc(50vw - 50%);
-  padding-right: calc(50vw - 50%);
-  border-bottom: 1px solid var(--rule);
-}
-
 .intro {
-  flex: 1;
+  padding-top: 2.5rem;
 }
 
 .intro h1,
@@ -233,15 +218,24 @@ body {
 
 .data-row {
   display: flex;
-  flex-direction: column;
-  flex: 0 0 240px;
-  gap: 1.1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2.5rem;
+  margin-top: 1.5rem;
+  padding-bottom: 1.5rem;
+  /* A single rule spanning the full viewport, same trick as the masthead —
+     not a box, just one line edge to edge of the screen. */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-left: calc(50vw - 50%);
+  padding-right: calc(50vw - 50%);
+  border-bottom: 1px solid var(--rule);
 }
 
 .datum {
   display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
+  align-items: baseline;
+  gap: 0.5rem;
 }
 
 .datum-label {
