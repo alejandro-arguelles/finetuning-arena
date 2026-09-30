@@ -140,25 +140,42 @@ body {
   width: 6px;
   height: 6px;
   border-radius: 50%; /* a genuine circle */
-  background: var(--green);
+  background: var(--red);
   display: inline-block;
+  animation: status-blink 1s steps(1, jump-none) infinite;
+}
+
+.status-dot.is-live {
+  background: var(--green);
+  animation: none;
+}
+
+/* Binary — the dot is either fully there or fully gone, no fade between. */
+@keyframes status-blink {
+  50% {
+    opacity: 0;
+  }
 }
 
 /* ---------- Intro ---------- */
 
 .hero-row {
   display: flex;
-  align-items: stretch;
-  gap: 0;
-  margin-top: 0;
+  align-items: flex-start;
+  gap: 3rem;
+  margin-top: 2.5rem;
+  padding-bottom: 1.5rem;
+  /* A single rule spanning the full viewport, same trick as the masthead —
+     not a box, just one line edge to edge of the screen. */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-left: calc(50vw - 50%);
+  padding-right: calc(50vw - 50%);
+  border-bottom: 1px solid var(--rule);
 }
 
 .intro {
   flex: 1;
-  border: 1px solid var(--rule);
-  /* The masthead's own border-bottom already draws this seam. */
-  border-top: none;
-  padding: 1.75rem 1.75rem 2rem;
 }
 
 .intro h1,
@@ -217,39 +234,28 @@ body {
 .data-row {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  flex: 0 0 280px;
-  border: 1px solid var(--rule);
-  /* Each shared seam is drawn once by a neighbor (.intro's right border,
-     the masthead's bottom border) — never doubled from both sides. */
-  border-left: none;
-  border-top: none;
+  flex: 0 0 240px;
+  gap: 1.1rem;
 }
 
 .datum {
-  padding: 0.9rem 1.25rem;
-  border-top: 1px solid var(--rule);
-}
-
-.datum:first-child {
-  border-top: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
 
 .datum-label {
-  display: block;
   font-family: var(--font-mono);
   font-size: 0.7rem;
   font-weight: 300;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--ink);
-  margin-bottom: 0.35rem;
 }
 
 .datum-value {
-  display: block;
   font-family: var(--font-mono);
-  font-size: 1.6rem;
+  font-size: 1.1rem;
   font-weight: 700;
 }
 

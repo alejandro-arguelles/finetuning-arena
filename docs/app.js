@@ -7,6 +7,8 @@
 const API_BASE_URL = "https://finetuning-arena.onrender.com";
 
 const statusEl = document.getElementById("status");
+const statusDotEl = document.querySelector(".status-dot");
+const statusLabelEl = document.getElementById("status-label");
 const statsEl = document.getElementById("stats");
 const tableEl = document.getElementById("leaderboard");
 const tbodyEl = tableEl.querySelector("tbody");
@@ -278,6 +280,9 @@ async function loadSubmissions() {
       throw new Error(`API responded with ${response.status}`);
     }
     const submissions = await response.json();
+
+    statusDotEl.classList.add("is-live");
+    statusLabelEl.textContent = "LIVE";
 
     if (submissions.length === 0) {
       statusEl.textContent = "No submissions yet.";
