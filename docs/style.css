@@ -59,7 +59,7 @@ body {
 
 .masthead {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: 1.5rem;
   flex-wrap: wrap;
@@ -76,9 +76,9 @@ body {
 
 .wordmark {
   font-family: var(--font-sans);
-  font-weight: 700;
-  font-size: 1rem;
-  letter-spacing: 0.02em;
+  font-weight: 500;
+  font-size: 21px;
+  letter-spacing: -0.012em;
 }
 
 .catalog {
