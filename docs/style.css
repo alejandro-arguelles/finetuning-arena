@@ -96,8 +96,12 @@ body {
 /* ---------- Intro ---------- */
 
 .intro {
-  border: 1px solid var(--rule);
-  padding: 1.75rem 1.75rem 2rem;
+  padding-top: 2.5rem;
+}
+
+.intro h1,
+.intro .lede,
+.intro .note {
   max-width: 640px;
 }
 
@@ -118,8 +122,6 @@ body {
 .intro .lede code {
   font-family: var(--font-mono);
   font-size: 0.9em;
-  background: var(--hairline);
-  padding: 0.05rem 0.35rem;
 }
 
 .intro .note {
@@ -160,7 +162,7 @@ body {
 .datum {
   flex: 1;
   padding: 0.9rem 1.25rem;
-  border-left: 1px solid var(--hairline);
+  border-left: 1px solid var(--rule);
 }
 
 .datum:first-child {
@@ -202,7 +204,7 @@ body {
 .section-head {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
+  align-items: center;
   flex-wrap: wrap;
   gap: 1rem;
   margin-bottom: 1rem;
@@ -210,9 +212,11 @@ body {
 
 .section-head h2 {
   margin: 0;
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
 }
 
 .section-head h2 #chart-heading-text {
@@ -240,7 +244,6 @@ body {
   text-transform: uppercase;
   background: none;
   border: none;
-  border-bottom: 2px solid transparent;
   padding: 0.1rem 0 0.4rem;
   color: var(--ink);
   cursor: pointer;
@@ -248,7 +251,6 @@ body {
 
 .tab.active {
   font-weight: 700;
-  border-bottom-color: var(--ink);
 }
 
 .filters2 {
@@ -259,19 +261,16 @@ body {
 .filters2 select {
   font-family: var(--font-mono);
   font-size: 0.75rem;
+  font-weight: 300;
   letter-spacing: 0.02em;
   text-transform: uppercase;
   background: transparent;
   color: var(--ink);
   border: none;
-  border-bottom: 1px solid var(--ink);
   padding: 0.1rem 0 0.3rem;
   cursor: pointer;
 }
 
-#chart {
-  border-top: 1px solid var(--hairline);
-}
 
 /* ---------- Table: a scientific information system, not a dashboard ---------- */
 
@@ -311,7 +310,7 @@ thead th:first-child {
 
 td {
   padding: 0.55rem 0.6rem 0.55rem 0;
-  border-bottom: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--rule);
   font-size: 0.9rem;
 }
 
@@ -336,7 +335,6 @@ td:first-child {
 footer.masthead {
   margin-top: 3.5rem;
   border-bottom: none;
-  border-top: 2px solid var(--rule);
   padding-top: 0.9rem;
 }
 
@@ -347,7 +345,7 @@ footer.masthead {
   .datum {
     flex: 1 1 50%;
     border-left: none;
-    border-top: 1px solid var(--hairline);
+    border-top: 1px solid var(--rule);
   }
   .datum:nth-child(-n + 2) {
     border-top: none;
