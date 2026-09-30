@@ -262,6 +262,21 @@ body {
   gap: 1rem;
 }
 
+.select-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.chevron {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 300;
+  color: var(--ink);
+  line-height: 1;
+  pointer-events: none;
+}
+
 .filters2 select {
   font-family: var(--font-mono);
   font-size: 0.75rem;

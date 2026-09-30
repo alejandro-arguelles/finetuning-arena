@@ -67,15 +67,24 @@
             <button class="tab" data-metric="rank">Rank</button>
           </div>
           <div class="filters2">
-            <select id="student-filter" aria-label="Filter chart by student">
-              <option value="all">All students</option>
-            </select>
-            <select id="model-filter" aria-label="Filter chart by base model">
-              <option value="all">All models</option>
-            </select>
-            <select id="task-filter" aria-label="Filter chart by task">
-              <option value="all">All tasks</option>
-            </select>
+            <span class="select-group">
+              <select id="student-filter" aria-label="Filter chart by student">
+                <option value="all">All students</option>
+              </select>
+              <span class="chevron" aria-hidden="true">⌄</span>
+            </span>
+            <span class="select-group">
+              <select id="model-filter" aria-label="Filter chart by base model">
+                <option value="all">All models</option>
+              </select>
+              <span class="chevron" aria-hidden="true">⌄</span>
+            </span>
+            <span class="select-group">
+              <select id="task-filter" aria-label="Filter chart by task">
+                <option value="all">All tasks</option>
+              </select>
+              <span class="chevron" aria-hidden="true">⌄</span>
+            </span>
           </div>
         </div>
       </div>
