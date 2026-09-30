@@ -1,0 +1,358 @@
+/* Fine-Tuning Arena — Monoidal identity variant.
+   System × Play: a disciplined typographic/rule-based structure (system)
+   holding an expressive scatter plot and hand-legible table (information).
+   Nimbus Sans L is the specified primary typeface but is a licensed font
+   not available here — Helvetica/Arial is its closest metric match and is
+   what most Nimbus-based systems fall back to. Geist Mono is genuinely
+   free and loaded below for all numeric/technical content. */
+
+:root {
+  --paper: #f0eee9;
+  --ink: #2c2b28;
+  --muted: #767470;
+  --rule: #2c2b28;
+  --hairline: #dad7cf;
+
+  /* Color is notation, not decoration: a small, direct vocabulary, used
+     only to carry student identity in the chart/table — never themed. */
+  --blue: #2851e3;
+  --orange: #e8720c;
+  --green: #1c8a4b;
+  --violet: #6b3fa0;
+  --red: #d4362f;
+  --yellow: #c99a00;
+
+  --font-sans: "Helvetica Neue", Helvetica, Arial, sans-serif; /* Nimbus Sans L substitute */
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Consolas, monospace;
+
+  /* Parameter-free geometry: every radius below is either 0 or h/2 for its
+     element (a genuine capsule/circle) — never an arbitrary in-between. */
+  --radius: 0px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+/* ---------- Masthead: catalog identifier, not a logo lockup ---------- */
+
+.masthead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding-bottom: 0.9rem;
+}
+
+.wordmark {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.catalog {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%; /* a genuine circle */
+  background: var(--green);
+  display: inline-block;
+}
+
+/* ---------- Intro ---------- */
+
+.intro {
+  border: 1px solid var(--rule);
+  padding: 1.75rem 1.75rem 2rem;
+  max-width: 640px;
+}
+
+.intro h1 {
+  margin: 0 0 0.9rem;
+  font-size: clamp(2.4rem, 6vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+
+.intro .lede {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+
+.intro .lede code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--hairline);
+  padding: 0.05rem 0.35rem;
+}
+
+.intro .note {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.example {
+  margin-top: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.example .arrow {
+  color: var(--ink);
+  font-weight: 300;
+}
+
+.example .eq-result {
+  font-weight: 700;
+}
+
+/* ---------- Data row: metadata, not stat cards ---------- */
+
+.data-row {
+  display: flex;
+  gap: 0;
+  margin-top: 2.5rem;
+  border: 1px solid var(--rule);
+}
+
+.datum {
+  flex: 1;
+  padding: 0.9rem 1.25rem;
+  border-left: 1px solid var(--hairline);
+}
+
+.datum:first-child {
+  border-left: none;
+}
+
+.datum-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 300;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 0.35rem;
+}
+
+.datum-value {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.status-msg {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 300;
+  color: var(--ink);
+  margin: 1rem 0;
+}
+
+/* ---------- Chart section ---------- */
+
+.chart-section {
+  margin-top: 3rem;
+}
+
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.section-head h2 #chart-heading-text {
+  font-weight: 300;
+  color: var(--ink);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.view-tabs {
+  display: flex;
+  gap: 1.1rem;
+}
+
+.tab {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  padding: 0.1rem 0 0.4rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.tab.active {
+  font-weight: 700;
+  border-bottom-color: var(--ink);
+}
+
+.filters2 {
+  display: flex;
+  gap: 1rem;
+}
+
+.filters2 select {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--ink);
+  border: none;
+  border-bottom: 1px solid var(--ink);
+  padding: 0.1rem 0 0.3rem;
+  cursor: pointer;
+}
+
+#chart {
+  border-top: 1px solid var(--hairline);
+}
+
+/* ---------- Table: a scientific information system, not a dashboard ---------- */
+
+.table-section {
+  margin-top: 3.5rem;
+}
+
+.table-section h2 {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin: 0 0 0.75rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+  font-weight: 300;
+  padding: 0 0.6rem 0.5rem 0;
+  border-bottom: 2px solid var(--rule);
+}
+
+thead th:first-child {
+  padding-left: 0;
+}
+
+td {
+  padding: 0.55rem 0.6rem 0.55rem 0;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 0.9rem;
+}
+
+td:first-child {
+  padding-left: 0;
+}
+
+.num {
+  font-family: var(--font-mono);
+  text-align: right;
+}
+
+.student-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%; /* a genuine circle */
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+footer.masthead {
+  margin-top: 3.5rem;
+  border-bottom: none;
+  border-top: 2px solid var(--rule);
+  padding-top: 0.9rem;
+}
+
+@media (max-width: 700px) {
+  .data-row {
+    flex-wrap: wrap;
+  }
+  .datum {
+    flex: 1 1 50%;
+    border-left: none;
+    border-top: 1px solid var(--hairline);
+  }
+  .datum:nth-child(-n + 2) {
+    border-top: none;
+  }
+  table {
+    font-size: 0.8rem;
+  }
+}
