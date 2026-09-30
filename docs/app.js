@@ -315,6 +315,8 @@ async function loadSubmissions() {
     renderTable(submissions, cachedColorMap);
     statusEl.hidden = true;
   } catch (error) {
+    statusDotEl.classList.remove("is-live");
+    statusLabelEl.textContent = "CONNECTING";
     statusEl.textContent = `Could not load submissions: ${error.message}`;
   }
 }

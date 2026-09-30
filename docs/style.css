@@ -369,7 +369,22 @@ body {
 /* ---------- Table: a scientific information system, not a dashboard ---------- */
 
 .table-section {
+  position: relative;
   margin-top: 3.5rem;
+  padding-top: 3rem;
+}
+
+.table-section::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* A single rule spanning the full viewport, same trick as the masthead —
+     not a box, just one line edge to edge of the screen. */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  border-top: 1px solid var(--rule);
 }
 
 .table-section h2 {
