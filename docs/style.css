@@ -442,6 +442,7 @@ td:first-child {
 footer.masthead {
   margin-top: 3.5rem;
   border-bottom: none;
+  border-top: 1px solid var(--rule);
   padding-top: 0.9rem;
 }
 
