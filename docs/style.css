@@ -150,12 +150,14 @@ body {
   display: flex;
   align-items: stretch;
   gap: 0;
-  margin-top: -1px;
+  margin-top: 0;
 }
 
 .intro {
   flex: 1;
   border: 1px solid var(--rule);
+  /* The masthead's own border-bottom already draws this seam. */
+  border-top: none;
   padding: 1.75rem 1.75rem 2rem;
 }
 
@@ -217,8 +219,11 @@ body {
   flex-direction: column;
   gap: 0;
   flex: 0 0 280px;
-  margin-left: -1px;
   border: 1px solid var(--rule);
+  /* Each shared seam is drawn once by a neighbor (.intro's right border,
+     the masthead's bottom border) — never doubled from both sides. */
+  border-left: none;
+  border-top: none;
 }
 
 .datum {
@@ -439,4 +444,54 @@ footer.masthead {
   table {
     font-size: 0.8rem;
   }
+}
+
+/* ---------- Quick prototype: minimal chat input bar ---------- */
+
+.chat-bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  background: var(--paper);
+  border-top: 1px solid var(--rule);
+}
+
+.chat-plus,
+.chat-send {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: none;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.chat-input {
+  flex: 1;
+  resize: none;
+  overflow-y: auto;
+  max-height: 8.5em;
+  border: none;
+  background: none;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 0.95rem;
+  line-height: 1.4;
+  padding: 0.3rem 0;
+}
+
+.chat-input:focus {
+  outline: none;
 }

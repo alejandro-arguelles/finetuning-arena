@@ -363,3 +363,12 @@ themeToggleEl.addEventListener("click", () => {
 });
 
 loadSubmissions();
+
+// Quick prototype: minimal chat input bar, not wired to anything else.
+const chatInputEl = document.querySelector(".chat-input");
+if (chatInputEl) {
+  chatInputEl.addEventListener("input", () => {
+    chatInputEl.style.height = "auto";
+    chatInputEl.style.height = `${chatInputEl.scrollHeight}px`;
+  });
+}
