@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fine-Tuning Arena — Leaderboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="page">
+    <section class="hero">
+      <h1>DORL Fine-Tuning Arena</h1>
+      <p>Leaderboard for arithmetic fine-tuning runs on <code>Qwen/Qwen3-0.6B-Base</code>.</p>
+      <p class="hero-note">
+        Each run picks a task (multiplication, addition/subtraction, …), fine-tunes on it, then evaluates on held-out problems for that same task, scoring the overall percentage of correct answers.
+        <span class="hero-example">Example: <em>"47 × 812"</em> → <strong>38,164</strong>.</span>
+      </p>
+    </section>
+
+    <section id="stats" class="stats" hidden>
+      <div class="tile tile-coral">
+        <span class="tile-label">Submissions</span>
+        <span class="tile-value" id="stat-count">0</span>
+      </div>
+      <div class="tile tile-yellow">
+        <span class="tile-label">Best accuracy</span>
+        <span class="tile-value" id="stat-best">0%</span>
+      </div>
+      <div class="tile tile-green">
+        <span class="tile-label">Avg. accuracy gain</span>
+        <span class="tile-value" id="stat-gain">0%</span>
+      </div>
+      <div class="tile tile-dark">
+        <span class="tile-label">Methods tried</span>
+        <span class="tile-value" id="stat-methods">0</span>
+      </div>
+    </section>
+
+    <p id="status" class="status">Loading submissions…</p>
+
+    <div class="chart-controls">
+      <div class="metric-toggle" role="group" aria-label="Chart view">
+        <button class="metric-btn metric-btn-purple active" data-metric="trainable_parameters">
+          &nbsp;&nbsp;Trainable parameters
+        </button>
+        <button class="metric-btn metric-btn-coral" data-metric="adapter_bytes">Adapter bytes</button>
+        <button class="metric-btn metric-btn-purple" data-metric="efficiency">Gain per M params</button>
+        <button class="metric-btn metric-btn-coral" data-metric="rank">Rank &nbsp;</button>
+      </div>
+      <div class="filters">
+        <select id="student-filter" class="student-filter" aria-label="Filter chart by student">
+          <option value="all">&nbsp;All&nbsp;</option>
+        </select>
+        <select id="model-filter" class="student-filter" aria-label="Filter chart by base model">
+          <option value="all">&nbsp;All models&nbsp;</option>
+        </select>
+        <select id="task-filter" class="student-filter" aria-label="Filter chart by task">
+          <option value="all">&nbsp;All tasks&nbsp;</option>
+        </select>
+      </div>
+    </div>
+
+    <section class="card card-chart" aria-labelledby="chart-heading">
+      <h2 id="chart-heading"><span id="chart-heading-text">Accuracy vs. trainable parameters</span></h2>
+      <div id="chart" style="height: 620px"></div>
+    </section>
+
+    <section class="card card-table">
+      <h2>Runs</h2>
+      <table id="leaderboard" hidden>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Student</th>
+            <th>Run</th>
+            <th>Method</th>
+            <th>LoRA rank</th>
+            <th>Accuracy</th>
+            <th>Accuracy gain</th>
+            <th>Trainable %</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.34.0/plotly.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

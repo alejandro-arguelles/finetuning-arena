@@ -1,8 +1,8 @@
-// Fine-Tuning Arena — leaderboard frontend.
+// Fine-Tuning Arena — Monoidal identity variant.
 //
-// Static site (GitHub Pages). Talks to the Render/FastAPI backend over
-// fetch() only — it never touches the database directly, and no secrets
-// belong here.
+// Same data, same API, same logic as app.js — only the presentation layer
+// (colors, chart chrome, table markup) is reskinned for the white/black
+// "scientific notebook" identity in style2.css.
 
 const API_BASE_URL = "https://finetuning-arena.onrender.com";
 
@@ -12,37 +12,35 @@ const tableEl = document.getElementById("leaderboard");
 const tbodyEl = tableEl.querySelector("tbody");
 const chartEl = document.getElementById("chart");
 const chartHeadingEl = document.getElementById("chart-heading-text");
-const metricButtons = document.querySelectorAll(".metric-btn");
+const tabButtons = document.querySelectorAll(".tab");
 const studentFilterEl = document.getElementById("student-filter");
 const modelFilterEl = document.getElementById("model-filter");
 const taskFilterEl = document.getElementById("task-filter");
 
-// Each view picks what goes on the X and Y axis. accuracy_gain_per_million_params
-// is already computed server-side (accuracy_gain / (trainable_parameters / 1e6)).
 const CHART_VIEWS = {
   trainable_parameters: {
     x: "trainable_parameters",
     y: "accuracy",
-    xLabel: "trainable parameters",
-    yLabel: "accuracy",
+    xLabel: "TRAINABLE PARAMETERS",
+    yLabel: "ACCURACY",
   },
   adapter_bytes: {
     x: "adapter_bytes",
     y: "accuracy",
-    xLabel: "adapter bytes",
-    yLabel: "accuracy",
+    xLabel: "ADAPTER BYTES",
+    yLabel: "ACCURACY",
   },
   efficiency: {
     x: "trainable_parameters",
     y: "accuracy_gain_per_million_params",
-    xLabel: "trainable parameters",
-    yLabel: "accuracy gain % per million trained params",
+    xLabel: "TRAINABLE PARAMETERS",
+    yLabel: "ACCURACY GAIN / M PARAMS",
   },
   rank: {
     x: "lora_rank",
     y: "accuracy",
-    xLabel: "LoRA rank",
-    yLabel: "accuracy",
+    xLabel: "LORA RANK",
+    yLabel: "ACCURACY",
     xType: "linear",
   },
 };
@@ -75,42 +73,32 @@ function hoverText(r) {
   return lines.join("<br>");
 }
 
-// Cached after the first successful load, so toggling the metric or the
-// student filter just re-renders the chart instead of re-fetching.
 let cachedSubmissions = null;
 let cachedColorMap = null;
 let currentViewKey = "trainable_parameters";
 let currentStudentFilter = "all";
 let currentModelFilter = "all";
-// Task filtering has no backing field yet (every submission today is the
-// same multiplication task) — this select is a placeholder for when a
-// `task` column exists, so people can see the affordance is coming.
 
 const PALETTE = {
-  bg: "#14161a",
-  purple: "#8c7ef2",
-  coral: "#f2795c",
-  yellow: "#f0cb3c",
-  green: "#3ea56e",
-  ink: "#0b0b0b",
-  inkOnDark: "#c7c5ba",
+  paper: "#f0eee9",
+  ink: "#2c2b28",
+  muted: "#767470",
+  hairline: "#dad7cf",
 };
 
-// Student identity is carried by color, from a validated 8-hue categorical
-// order (dark-surface steps, since the chart card is dark). Never cycled or
-// extended: a 9th+ student folds into a neutral "other" gray rather than
-// inventing a new hue that hasn't been checked for colorblind safety.
+// Color is notation, not decoration: a small, direct, six-hue vocabulary
+// (never a generated tint/shade ramp) carries student identity. Ordered so
+// no two adjacent slots are an easily-confused pair. A 7th+ student folds
+// into neutral gray rather than inventing a new hue.
 const STUDENT_COLORS = [
-  "#3987e5", // blue
-  "#d95926", // orange
-  "#199e70", // aqua
-  "#c98500", // yellow
-  "#d55181", // magenta
-  "#008300", // green
-  "#9085e9", // violet
-  "#e66767", // red
+  "#2851e3", // blue
+  "#e8720c", // orange
+  "#1c8a4b", // green
+  "#6b3fa0", // violet
+  "#d4362f", // red
+  "#c99a00", // yellow
 ];
-const STUDENT_COLOR_OTHER = "rgba(199, 197, 186, 0.4)";
+const STUDENT_COLOR_OTHER = "rgba(107, 107, 107, 0.5)";
 
 function studentColorMap(submissions) {
   const students = Array.from(new Set(submissions.map((s) => s.student))).sort();
@@ -129,14 +117,14 @@ function renderRow(submission, colorMap, rank) {
   const row = document.createElement("tr");
   const dotColor = colorMap.get(submission.student);
   row.innerHTML = `
-    <td>${rank}</td>
+    <td class="num">${rank}</td>
     <td><span class="student-dot" style="background:${dotColor}"></span>${submission.student}</td>
     <td>${submission.run_name}</td>
     <td>${submission.method}</td>
-    <td>${submission.lora_rank ?? "—"}</td>
-    <td>${formatPercent(submission.accuracy)}</td>
-    <td>${formatPercent(submission.accuracy_gain)}</td>
-    <td>${submission.trainable_percentage.toFixed(3)}%</td>
+    <td class="num">${submission.lora_rank ?? "—"}</td>
+    <td class="num">${formatPercent(submission.accuracy)}</td>
+    <td class="num">${formatPercent(submission.accuracy_gain)}</td>
+    <td class="num">${submission.trainable_percentage.toFixed(3)}%</td>
   `;
   return row;
 }
@@ -151,8 +139,7 @@ function renderTable(submissions, colorMap) {
 
 function renderStats(submissions) {
   const best = submissions.reduce((a, b) => (b.accuracy > a.accuracy ? b : a));
-  const avgGain =
-    submissions.reduce((sum, s) => sum + s.accuracy_gain, 0) / submissions.length;
+  const avgGain = submissions.reduce((sum, s) => sum + s.accuracy_gain, 0) / submissions.length;
   const methodCount = new Set(submissions.map((s) => s.method)).size;
 
   document.getElementById("stat-count").textContent = submissions.length;
@@ -174,15 +161,6 @@ function renderChart(
   const isAccuracyView = view.y === "accuracy";
   const isLogX = view.xType !== "linear";
 
-  // trainable_parameters == 0 means "no fine-tuning" (the base model). It has
-  // no meaningful position on a log-scale axis (log(0) is undefined, so
-  // Plotly would just silently drop the point) — it belongs on the chart as
-  // a reference line instead, not as a scatter point, only for log-x views.
-  // Rows missing the selected metric (e.g. lora_rank on a full-FT submission,
-  // or adapter_bytes on an older one) are likewise left out of that view
-  // rather than plotted at 0/null.
-  // The baseline reference line always reflects everyone, regardless of the
-  // student filter — it's a fixed reference point, not one student's data.
   const filtered = submissions
     .filter((s) => studentFilter === "all" || s.student === studentFilter)
     .filter((s) => modelFilter === "all" || s.base_model === modelFilter);
@@ -208,36 +186,38 @@ function renderChart(
     type: "scatter",
     marker: {
       symbol: "circle",
-      size: 11,
+      size: 9,
       color: colorMap.get(student),
-      line: { color: PALETTE.bg, width: 1 },
+      line: { color: PALETTE.paper, width: 1 },
     },
   }));
 
   const layout = {
     paper_bgcolor: "transparent",
     plot_bgcolor: "transparent",
-    font: { color: PALETTE.inkOnDark, family: "Space Grotesk, system-ui, sans-serif" },
-    margin: { l: 55, r: 10, t: 5, b: 40 },
+    font: { color: PALETTE.ink, family: "Geist Mono, ui-monospace, monospace", size: 11 },
+    margin: { l: 55, r: 10, t: 15, b: 45 },
     xaxis: {
       title: view.xLabel,
       type: isLogX ? "log" : "linear",
       dtick: isLogX ? undefined : 1,
-      gridcolor: "rgba(199, 197, 186, 0.15)",
-      linecolor: PALETTE.inkOnDark,
-      tickcolor: PALETTE.inkOnDark,
-      color: PALETTE.inkOnDark,
+      gridcolor: PALETTE.hairline,
+      linecolor: PALETTE.ink,
+      tickcolor: PALETTE.ink,
+      color: PALETTE.ink,
+      zeroline: false,
     },
     yaxis: {
       title: view.yLabel,
       tickformat: isAccuracyView ? ".0%" : undefined,
       rangemode: isAccuracyView ? "tozero" : "normal",
-      gridcolor: "rgba(199, 197, 186, 0.15)",
-      linecolor: PALETTE.inkOnDark,
-      tickcolor: PALETTE.inkOnDark,
-      color: PALETTE.inkOnDark,
+      gridcolor: PALETTE.hairline,
+      linecolor: PALETTE.ink,
+      tickcolor: PALETTE.ink,
+      color: PALETTE.ink,
+      zeroline: false,
     },
-    legend: { font: { color: PALETTE.inkOnDark } },
+    legend: { font: { color: PALETTE.ink, size: 11 } },
   };
 
   if (baselineRows.length > 0) {
@@ -251,7 +231,7 @@ function renderChart(
         yref: "y",
         y0: baselineAccuracy,
         y1: baselineAccuracy,
-        line: { color: "rgba(199, 197, 186, 0.5)", width: 1, dash: "dot" },
+        line: { color: PALETTE.ink, width: 1, dash: "dot" },
       },
     ];
     layout.annotations = [
@@ -262,9 +242,9 @@ function renderChart(
         yref: "y",
         y: baselineAccuracy,
         yanchor: "bottom",
-        text: "Base (no fine-tune)",
+        text: "BASE (NO FINE-TUNE)",
         showarrow: false,
-        font: { color: PALETTE.inkOnDark, size: 11 },
+        font: { color: PALETTE.ink, size: 10 },
       },
     ];
   }
@@ -315,14 +295,14 @@ async function loadSubmissions() {
   }
 }
 
-metricButtons.forEach((button) => {
+tabButtons.forEach((button) => {
   button.addEventListener("click", () => {
     if (!cachedSubmissions) return;
-    metricButtons.forEach((b) => b.classList.remove("active"));
+    tabButtons.forEach((b) => b.classList.remove("active"));
     button.classList.add("active");
     currentViewKey = button.dataset.metric;
     const view = CHART_VIEWS[currentViewKey];
-    chartHeadingEl.textContent = `${view.yLabel} vs. ${view.xLabel}`;
+    chartHeadingEl.textContent = view.xLabel;
     renderChart(cachedSubmissions, cachedColorMap, currentViewKey, currentStudentFilter, currentModelFilter);
   });
 });
@@ -339,8 +319,7 @@ modelFilterEl.addEventListener("change", () => {
   renderChart(cachedSubmissions, cachedColorMap, currentViewKey, currentStudentFilter, currentModelFilter);
 });
 
-// No `task` field on submissions yet, so this filter only ever shows
-// "All tasks" for now — kept enabled (not disabled) so it doesn't look
-// visually broken while there's nothing else to pick.
+// No `task` field on submissions yet — the select only ever shows
+// "All tasks" until that column exists.
 
 loadSubmissions();

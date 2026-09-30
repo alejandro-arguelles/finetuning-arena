@@ -1,0 +1,347 @@
+:root {
+  --bg: #14161a;
+  --ink: #0b0b0b;
+  --ink-on-dark: #c7c5ba;
+
+  /* Names are legacy/positional, not literal color descriptions. */
+  --purple: #8c7ef2;
+  --coral: #f2795c;
+  --yellow: #f0cb3c;
+  --green: #3ea56e;
+
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+  --radius-pill: 999px;
+  /* A single rounded corner (the rest at 0) clamps to the box's full
+     min(width, height) instead of half of it, which overshoots into an
+     exaggerated sweep. This is the "fully round, one corner" radius,
+     tuned to these buttons' actual height so it reads as a normal pill
+     corner instead. */
+  --radius-corner: 32px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink-on-dark);
+  font-family: "Space Grotesk", system-ui, -apple-system, sans-serif;
+}
+
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 0.25rem 3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* Pills: border only, never filled — the counterpart to the solid tiles/cards below. */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.brand {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.brand-partner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  /* Space Grotesk's cap-height is ~0.714em, so this puts the "M" at ~22px —
+     the same height as the logo mark next to it. */
+  font-size: 1.9rem;
+  font-weight: 300;
+  color: var(--ink-on-dark);
+}
+
+.brand-partner-logo {
+  display: inline-block;
+  width: 24px;
+  height: 29px;
+  background-color: var(--ink-on-dark);
+  -webkit-mask-image: url("Msolo.svg");
+  mask-image: url("Msolo.svg");
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
+.pill {
+  border: 1.5px solid var(--ink-on-dark);
+  border-radius: var(--radius-pill);
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  background: transparent;
+  white-space: nowrap;
+}
+
+/* Hero: solid fill, no border. */
+.hero {
+  background: transparent;
+  color: var(--ink-on-dark);
+  padding: 1.25rem 1.25rem 2rem;
+}
+
+.hero h1 {
+  margin: 0 0 0.5rem;
+  margin-left: -0.04em; /* optical alignment: bold glyphs at this size carry more left bearing than the lighter body text below */
+  font-size: clamp(3rem, 8vw, 4.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.hero p {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 300;
+}
+
+.hero code {
+  background: rgba(181, 179, 170, 0.18);
+  padding: 0.1rem 0.4rem;
+}
+
+.hero-note {
+  margin-top: 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 300;
+}
+
+.hero-example {
+  display: block;
+  margin-top: 0.6rem;
+}
+
+.status {
+  color: var(--ink-on-dark);
+  font-weight: 300;
+  margin: 0.75rem 0;
+  padding: 0 1.25rem;
+}
+
+/* Stat tiles: solid fill, no border, one flat tone each — flush against each other. */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+}
+
+.tile + .tile {
+  margin-left: -1.5px;
+}
+
+.tile {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  color: var(--ink-on-dark);
+  background: transparent;
+  border: 1.5px solid var(--ink-on-dark);
+}
+
+/* Corner rounding follows what's visually adjacent, not DOM order: the
+   "Methods tried" tile (tile-dark) has no visible fill/border, so a
+   neighbor's edge against it reads as free, not touching. */
+.tile:first-child {
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+
+.tile:last-child {
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+@media (max-width: 700px) {
+  .tile:first-child {
+    border-radius: var(--radius-md) 0 0 0;
+  }
+  .tile:nth-child(2) {
+    border-radius: 0 var(--radius-md) 0 0;
+  }
+  .tile:nth-child(3) {
+    border-radius: 0 0 0 var(--radius-md);
+  }
+  .tile:last-child {
+    border-radius: 0 0 var(--radius-md) 0;
+  }
+}
+
+.tile-label {
+  font-size: 0.85rem;
+  font-weight: 300;
+}
+
+.tile-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+
+
+/* Cards: solid fill, no border, rounded. */
+.card {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+
+.card-chart {
+  background: transparent;
+  padding: 1rem 1.25rem;
+}
+
+.card-table {
+  border-radius: var(--radius-lg);
+}
+
+.chart-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 6rem;
+  margin-bottom: -1.5px;
+  padding: 0 1.25rem;
+}
+
+.metric-toggle {
+  display: flex;
+  gap: 0;
+}
+
+.metric-btn:first-child {
+  border-radius: var(--radius-pill) 0 0 var(--radius-pill);
+}
+
+.metric-btn:last-child {
+  border-radius: 0 var(--radius-pill) var(--radius-pill) 0;
+}
+
+.metric-btn + .metric-btn {
+  margin-left: -1.5px;
+}
+
+.filters {
+  display: flex;
+  gap: 0;
+}
+
+.filters .student-filter + .student-filter {
+  margin-left: -1.5px;
+}
+
+.student-filter {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.5rem 1.1rem;
+  border-radius: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 1.5px solid var(--ink-on-dark);
+  color: var(--ink-on-dark);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.student-filter option {
+  background: var(--bg);
+  color: var(--ink-on-dark);
+}
+
+.metric-btn {
+  font-family: inherit;
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.5rem 1.1rem;
+  border-radius: 0;
+  cursor: pointer;
+  background: transparent;
+  border: 1.5px solid;
+  color: var(--ink-on-dark);
+}
+
+.metric-btn.active {
+  border: none;
+  color: var(--ink);
+}
+
+.metric-btn-purple,
+.metric-btn-coral {
+  border-color: var(--ink-on-dark);
+}
+.metric-btn-purple.active,
+.metric-btn-coral.active {
+  background: var(--ink-on-dark);
+}
+
+.card h2 {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 300;
+  color: var(--ink-on-dark);
+}
+
+#chart-heading {
+  /* Aligns with where the button's TEXT starts above (chart-controls'
+     left inset + the button's own left padding), not just the button's
+     box edge. */
+  margin-left: 1.1rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 0.6rem 0.5rem;
+  font-size: 0.95rem;
+}
+
+th {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.03em;
+}
+
+.student-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 0.5rem;
+}
+
+@media (max-width: 700px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
