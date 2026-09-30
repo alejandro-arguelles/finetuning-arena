@@ -92,6 +92,16 @@ function currentPalette() {
   };
 }
 
+// A very faint tint of the current ink — used for gridlines, so they read
+// as a faint scaffold rather than a structural line, in either theme.
+function hexToRgba(hex, alpha) {
+  const n = parseInt(hex.replace("#", ""), 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
 // Color is notation, not decoration: a small, direct, six-hue vocabulary
 // (never a generated tint/shade ramp) carries student identity. Ordered so
 // no two adjacent slots are an easily-confused pair. A 7th+ student folds
@@ -208,7 +218,8 @@ function renderChart(
       title: view.xLabel,
       type: isLogX ? "log" : "linear",
       dtick: isLogX ? undefined : 1,
-      gridcolor: PALETTE.hairline,
+      gridcolor: hexToRgba(PALETTE.ink, 0.08),
+      gridwidth: 1,
       linecolor: PALETTE.ink,
       tickcolor: PALETTE.ink,
       color: PALETTE.ink,
@@ -218,7 +229,8 @@ function renderChart(
       title: view.yLabel,
       tickformat: isAccuracyView ? ".0%" : undefined,
       rangemode: isAccuracyView ? "tozero" : "normal",
-      gridcolor: PALETTE.hairline,
+      gridcolor: hexToRgba(PALETTE.ink, 0.08),
+      gridwidth: 1,
       linecolor: PALETTE.ink,
       tickcolor: PALETTE.ink,
       color: PALETTE.ink,
