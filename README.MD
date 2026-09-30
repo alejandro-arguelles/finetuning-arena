@@ -85,7 +85,7 @@ API base URL in `frontend/app.js` (`API_BASE_URL`) once the Render service is
 live.
 
 Future work: a sortable submissions table and Plotly scatter plots (accuracy vs
-trainable parameters, adapter size, training time, peak VRAM, etc.), with
+trainable  , adapter size, training time, peak VRAM, etc.), with
 selectable X/Y metrics and log axes where appropriate.
 
 ## Student submission flow

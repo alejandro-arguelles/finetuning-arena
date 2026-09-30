@@ -410,12 +410,8 @@ td:first-child {
   padding-left: 0;
 }
 
-.num,
-.mono {
-  font-family: var(--font-mono);
-}
-
 .num {
+  font-family: var(--font-mono);
   text-align: right;
 }
 
@@ -446,52 +442,3 @@ footer.masthead {
   }
 }
 
-/* ---------- Quick prototype: minimal chat input bar ---------- */
-
-.chat-bar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 0.75rem 1rem;
-  background: var(--paper);
-  border-top: 1px solid var(--rule);
-}
-
-.chat-plus,
-.chat-send {
-  flex: none;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 1px solid var(--rule);
-  background: none;
-  color: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 1rem;
-  line-height: 1;
-  cursor: pointer;
-}
-
-.chat-input {
-  flex: 1;
-  resize: none;
-  overflow-y: auto;
-  max-height: 8.5em;
-  border: none;
-  background: none;
-  color: var(--ink);
-  font-family: var(--font-sans);
-  font-size: 0.95rem;
-  line-height: 1.4;
-  padding: 0.3rem 0;
-}
-
-.chat-input:focus {
-  outline: none;
-}
