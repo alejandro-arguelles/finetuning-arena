@@ -15,7 +15,7 @@
 <body>
   <div class="page">
     <header class="masthead">
-      <span class="wordmark">DORL</span>
+      <span class="wordmark">Monoidal</span>
       <span class="catalog">FT-001 · ARITHMETIC FINE-TUNING · 2026.09</span>
       <span class="status"><span class="status-dot"></span>LIVE</span>
       <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
@@ -24,39 +24,41 @@
       </button>
     </header>
 
-    <section class="intro">
-      <h1>DORL Fine-Tuning Arena</h1>
-      <p class="lede">Leaderboard for arithmetic fine-tuning runs on <code>Qwen/Qwen3-0.6B-Base</code>.</p>
-      <p class="note">
-        Each run picks a task — multiplication, addition/subtraction, … — fine-tunes on it, then
-        evaluates on held-out problems for that same task, scoring the overall percentage of
-        correct answers.
-      </p>
-      <div class="example">
-        <span class="eq">47 × 812</span>
-        <span class="arrow">→</span>
-        <span class="eq-result">38,164</span>
-      </div>
-    </section>
+    <div class="hero-row">
+      <section class="intro">
+        <h1>DORL Fine-Tuning Arena</h1>
+        <p class="lede">Leaderboard for arithmetic fine-tuning runs on <code>Qwen/Qwen3-0.6B-Base</code>.</p>
+        <p class="note">
+          Each run picks a task — multiplication, addition/subtraction, … — fine-tunes on it, then
+          evaluates on held-out problems for that same task, scoring the overall percentage of
+          correct answers.
+        </p>
+        <div class="example">
+          <span class="eq">47 × 812</span>
+          <span class="arrow">→</span>
+          <span class="eq-result">38,164</span>
+        </div>
+      </section>
 
-    <section id="stats" class="data-row" hidden>
-      <div class="datum">
-        <span class="datum-label">Submissions</span>
-        <span class="datum-value" id="stat-count">0</span>
-      </div>
-      <div class="datum">
-        <span class="datum-label">Best accuracy</span>
-        <span class="datum-value" id="stat-best">0%</span>
-      </div>
-      <div class="datum">
-        <span class="datum-label">Avg. accuracy gain</span>
-        <span class="datum-value" id="stat-gain">0%</span>
-      </div>
-      <div class="datum">
-        <span class="datum-label">Methods tried</span>
-        <span class="datum-value" id="stat-methods">0</span>
-      </div>
-    </section>
+      <section id="stats" class="data-row" hidden>
+        <div class="datum">
+          <span class="datum-label">Submissions</span>
+          <span class="datum-value" id="stat-count">0</span>
+        </div>
+        <div class="datum">
+          <span class="datum-label">Best accuracy</span>
+          <span class="datum-value" id="stat-best">0%</span>
+        </div>
+        <div class="datum">
+          <span class="datum-label">Avg. accuracy gain</span>
+          <span class="datum-value" id="stat-gain">0%</span>
+        </div>
+        <div class="datum">
+          <span class="datum-label">Methods tried</span>
+          <span class="datum-value" id="stat-methods">0</span>
+        </div>
+      </section>
+    </div>
 
     <p id="status" class="status-msg">Loading submissions…</p>
 
