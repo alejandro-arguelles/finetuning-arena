@@ -10,7 +10,9 @@
   --paper: #f0eee9;
   --ink: #2c2b28;
   --muted: #767470;
-  --rule: var(--ink);
+  /* 1px is the practical minimum a browser renders crisply — thinner than
+     that reads as reduced opacity on the same ink, not narrower pixels. */
+  --rule: color-mix(in srgb, var(--ink) 80%, transparent);
   --hairline: #dad7cf;
 
   /* Color is notation, not decoration: a small, direct vocabulary, used
@@ -64,7 +66,7 @@ body {
   gap: 1.5rem;
   flex-wrap: wrap;
   padding-bottom: 0.9rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 0;
   /* A single rule spanning the full viewport, breaking out of .page's
      max-width — not a box, just one line edge to edge of the screen. */
   width: 100vw;
@@ -123,7 +125,7 @@ body {
   width: 13px;
   height: 13px;
   border-radius: 50%; /* a genuine circle */
-  border: 1.5px solid var(--ink);
+  border: 1px solid var(--ink);
   background: linear-gradient(90deg, var(--ink) 50%, transparent 50%);
   display: inline-block;
 }
@@ -139,7 +141,9 @@ body {
 /* ---------- Intro ---------- */
 
 .intro {
-  padding-top: 2.5rem;
+  border: 1px solid var(--rule);
+  margin-top: -1px;
+  padding: 1.75rem 1.75rem 2rem;
 }
 
 .intro h1,
@@ -198,7 +202,7 @@ body {
 .data-row {
   display: flex;
   gap: 0;
-  margin-top: 2.5rem;
+  margin-top: -1px;
   border: 1px solid var(--rule);
 }
 
