@@ -7,8 +7,8 @@
    free and loaded below for all numeric/technical content. */
 
 :root {
-  --paper: #f0eee9;
-  --ink: #2c2b28;
+  --paper: #e5e5e5;
+  --ink: #0a0d0f;
   --muted: #767470;
   /* 1px is the practical minimum a browser renders crisply — thinner than
      that reads as reduced opacity on the same ink, not narrower pixels. */
@@ -35,8 +35,8 @@
 /* Dark mode: the same identity, with paper and ink literally swapped —
    nothing else (structure, rules, semantic colors) changes. */
 :root[data-theme="dark"] {
-  --paper: #2c2b28;
-  --ink: #f0eee9;
+  --paper: #0a0d0f;
+  --ink: #e5e5e5;
 }
 
 * {
