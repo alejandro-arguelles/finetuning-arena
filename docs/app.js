@@ -343,10 +343,12 @@ modelFilterEl.addEventListener("change", () => {
 
 // Dark mode: same identity, --paper/--ink swapped — see style.css.
 const themeToggleEl = document.getElementById("theme-toggle");
+const themeLabelEl = document.getElementById("theme-label");
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
-  themeToggleEl.textContent = theme === "dark" ? "LIGHT" : "DARK";
+  themeToggleEl.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+  themeLabelEl.textContent = theme === "dark" ? "LIGHT" : "DARK";
   if (cachedSubmissions) {
     renderChart(cachedSubmissions, cachedColorMap, currentViewKey, currentStudentFilter, currentModelFilter);
   }

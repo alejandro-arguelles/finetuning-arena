@@ -18,7 +18,10 @@
       <span class="wordmark">DORL</span>
       <span class="catalog">FT-001 · ARITHMETIC FINE-TUNING · 2026.09</span>
       <span class="status"><span class="status-dot"></span>LIVE</span>
-      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">DARK</button>
+      <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+        <span class="theme-icon" aria-hidden="true"></span>
+        <span id="theme-label" class="theme-label">DARK</span>
+      </button>
     </header>
 
     <section class="intro">
@@ -89,11 +92,12 @@
           </div>
         </div>
       </div>
-      <div id="chart" style="height: 480px"></div>
+      <div id="chart"></div>
     </section>
 
     <section class="table-section">
       <h2>Runs</h2>
+      <div class="table-scroll">
       <table id="leaderboard" hidden>
         <thead>
           <tr>
@@ -109,6 +113,7 @@
         </thead>
         <tbody></tbody>
       </table>
+      </div>
     </section>
 
     <footer class="masthead">

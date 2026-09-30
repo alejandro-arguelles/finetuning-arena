@@ -59,11 +59,19 @@ body {
 
 .masthead {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
   flex-wrap: wrap;
   padding-bottom: 0.9rem;
+  margin-bottom: 2.5rem;
+  /* A single rule spanning the full viewport, breaking out of .page's
+     max-width — not a box, just one line edge to edge of the screen. */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding-left: calc(50vw - 50%);
+  padding-right: calc(50vw - 50%);
+  border-bottom: 1px solid var(--rule);
 }
 
 .wordmark {
@@ -93,16 +101,31 @@ body {
 }
 
 .theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.theme-label {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   font-weight: 300;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  background: none;
-  border: 1px solid var(--rule);
   color: var(--ink);
-  padding: 0.2rem 0.6rem;
-  cursor: pointer;
+}
+
+.theme-icon {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%; /* a genuine circle */
+  border: 1.5px solid var(--ink);
+  background: linear-gradient(90deg, var(--ink) 50%, transparent 50%);
+  display: inline-block;
 }
 
 .status-dot {
