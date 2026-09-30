@@ -10,7 +10,7 @@
   --paper: #f0eee9;
   --ink: #2c2b28;
   --muted: #767470;
-  --rule: #2c2b28;
+  --rule: var(--ink);
   --hairline: #dad7cf;
 
   /* Color is notation, not decoration: a small, direct vocabulary, used
@@ -28,6 +28,13 @@
   /* Parameter-free geometry: every radius below is either 0 or h/2 for its
      element (a genuine capsule/circle) — never an arbitrary in-between. */
   --radius: 0px;
+}
+
+/* Dark mode: the same identity, with paper and ink literally swapped —
+   nothing else (structure, rules, semantic colors) changes. */
+:root[data-theme="dark"] {
+  --paper: #2c2b28;
+  --ink: #f0eee9;
 }
 
 * {
@@ -83,6 +90,19 @@ body {
   font-size: 0.75rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+}
+
+.theme-toggle {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  padding: 0.2rem 0.6rem;
+  cursor: pointer;
 }
 
 .status-dot {

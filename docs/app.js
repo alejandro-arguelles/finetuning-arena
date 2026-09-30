@@ -79,12 +79,18 @@ let currentViewKey = "trainable_parameters";
 let currentStudentFilter = "all";
 let currentModelFilter = "all";
 
-const PALETTE = {
-  paper: "#f0eee9",
-  ink: "#2c2b28",
-  muted: "#767470",
-  hairline: "#dad7cf",
-};
+// Read live rather than hardcoded, so the chart follows the dark-mode
+// toggle (which just flips the --paper/--ink custom properties).
+function currentPalette() {
+  const cs = getComputedStyle(document.documentElement);
+  const read = (name) => cs.getPropertyValue(name).trim();
+  return {
+    paper: read("--paper"),
+    ink: read("--ink"),
+    muted: read("--muted"),
+    hairline: read("--hairline"),
+  };
+}
 
 // Color is notation, not decoration: a small, direct, six-hue vocabulary
 // (never a generated tint/shade ramp) carries student identity. Ordered so
@@ -160,6 +166,7 @@ function renderChart(
   const view = CHART_VIEWS[viewKey];
   const isAccuracyView = view.y === "accuracy";
   const isLogX = view.xType !== "linear";
+  const PALETTE = currentPalette();
 
   const filtered = submissions
     .filter((s) => studentFilter === "all" || s.student === studentFilter)
@@ -321,5 +328,24 @@ modelFilterEl.addEventListener("change", () => {
 
 // No `task` field on submissions yet — the select only ever shows
 // "All tasks" until that column exists.
+
+// Dark mode: same identity, --paper/--ink swapped — see style.css.
+const themeToggleEl = document.getElementById("theme-toggle");
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  themeToggleEl.textContent = theme === "dark" ? "LIGHT" : "DARK";
+  if (cachedSubmissions) {
+    renderChart(cachedSubmissions, cachedColorMap, currentViewKey, currentStudentFilter, currentModelFilter);
+  }
+}
+
+applyTheme(localStorage.getItem("theme") === "dark" ? "dark" : "light");
+
+themeToggleEl.addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  localStorage.setItem("theme", next);
+  applyTheme(next);
+});
 
 loadSubmissions();
